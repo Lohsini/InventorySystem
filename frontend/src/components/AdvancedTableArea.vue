@@ -5,7 +5,7 @@
       <h3>choose one table:</h3>
       <div class="choose-area">
         <div class="table_radio" v-for="(item,index) in tables" :key="index">
-          <input v-model="selection" type="radio" name="tables" :value="item" :id="item+index" >
+          <input v-model="selectedTable" type="radio" name="tables" :value="item" :id="item+index" >
           <label :for="item+index">{{item}}</label>
         </div>
       </div>
@@ -13,7 +13,7 @@
 
     <div class="result">
       <h1>
-        <span v-if="selection">{{capitalizeFirstLetter(selection)}}</span>
+        <span v-if="selectedTable">{{capitalizeFirstLetter(selectedTable)}}</span>
       </h1>
 
       <div class="container">
@@ -37,7 +37,7 @@ export default {
   },
   data() {
     return {
-      selection: "",
+      selectedTable: "",
       tables: [
         "Count the number of products purchased in each category",
         "Analyze NTile distribution of total purchases for each product in descending order",
@@ -87,7 +87,7 @@ export default {
   },
   mounted(){
     if (this.tables) {
-      this.selection = this.tables[0]
+      this.selectedTable = this.tables[0]
     }
   },
   methods:{

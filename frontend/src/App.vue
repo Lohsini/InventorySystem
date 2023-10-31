@@ -5,9 +5,9 @@
     <div class="choose-area">
       <div class="mode_radio">
         <input v-model="mode" type="radio" name="mode" value="regular" id="regular" class="d-none">
-        <label :class="{'selection': mode === 'regular'}" for="regular">regular</label>
+        <label :class="{'selectedTable': mode === 'regular'}" for="regular">regular</label>
         <input v-model="mode" type="radio" name="mode" value="advanced" id="advanced" class="d-none">
-        <label :class="{'selection': mode === 'advanced'}" for="advanced">advanced</label>
+        <label :class="{'selectedTable': mode === 'advanced'}" for="advanced">advanced</label>
       </div>
     </div>
 
@@ -65,7 +65,7 @@ export default {
   cursor: pointer;
 }
 
-.choose-area .mode_radio .selection{
+.choose-area .mode_radio .selectedTable{
   background-color: #2c3e50;
 }
 </style>

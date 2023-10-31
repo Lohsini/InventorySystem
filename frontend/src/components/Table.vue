@@ -14,17 +14,17 @@
           <button class="update btn btn-primary" @click="updateItem(item,index)">
             update
           </button>
-          <button class="btn btn-danger" @click="dropItem(item,index)">
+          <button class="btn btn-danger" @click="dropItem(index)">
             Drop
           </button>
         </td>
       </tr>
       <tr>
         <td v-for="(header,key) in headers" :key="key">
-          <input v-if="editorOn" type="text" :placeholder="header" v-model="newRow[header]">
+          <input v-if="editorOn" type="text" :placeholder="header" v-model="newContent[header]">
         </td>
         <td v-if="editorOn">
-          <button class="btn btn-success" @click="addItem(newRow)">
+          <button class="btn btn-success" @click="addItem(newContent)">
             Add
           </button>
         </td>
@@ -56,19 +56,19 @@ export default {
   },
   data() {
     return {
-      newRow:{},
+      newContent:{},
     }
   },
   methods:{
-    updateItem(item,index) {
-      this.$emit('updateItem', item, index);
+    addItem(newContent){
+      this.$emit('createData', newContent);
+      this.newContent = {}
     },
     dropItem(index) {
-      this.$emit('dropItem', index);
+      this.$emit('deleteData', index);
     },
-    addItem(newRow){
-      this.$emit('addItem', newRow);
-      this.newRow = {}
+    updateItem(item,index) {
+      this.$emit('updateData', item, index);
     },
   },
 }
