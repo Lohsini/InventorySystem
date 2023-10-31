@@ -39,11 +39,15 @@ export default {
   props: {
     headers: {
       type: Array,
-      required: true,
+      default() {
+        return []
+      }
     },
     contents: {
       type: Array,
-      required: true,
+      default() {
+        return []
+      }
     },
     editorOn: {
       type: Boolean,

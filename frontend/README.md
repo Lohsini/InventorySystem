@@ -1,15 +1,19 @@
 # 425databaseproject
+# frontend
 
-## Project setup
+### step 1:
+Project setup
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### step 2: 
+Compiles and hot-reloads for development
 ```
 npm run serve
 ```
 
+## Others
 ### Compiles and minifies for production
 ```
 npm run build
