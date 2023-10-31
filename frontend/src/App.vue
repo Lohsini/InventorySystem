@@ -14,14 +14,11 @@
     <TableArea v-if="mode === 'regular'"/>
     <AdvancedTableArea v-if="mode === 'advanced'"/>
     
-    <!-- <SearchArea /> -->
-    <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
   </div>
 </template>
 
 <script>
 import HelloBanner from './components/HelloBanner.vue'
-// import SearchArea from './components/SearchArea.vue'
 import TableArea from './components/TableArea.vue'
 import AdvancedTableArea from './components/AdvancedTableArea.vue'
 
@@ -29,7 +26,6 @@ export default {
   name: 'App',
   components: {
     HelloBanner,
-    // SearchArea,
     TableArea,
     AdvancedTableArea,
   },
