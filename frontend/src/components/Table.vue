@@ -20,9 +20,6 @@
         </td>
       </tr>
       <tr>
-        <!-- <td v-if="selectedTable !== 'inventory'">
-          <input v-if="editorOn" type="text" :value="nextID">
-        </td> -->
         <td v-for="(header,key) in headers" :key="key">
           <input v-if="editorOn" type="text" :placeholder="header" v-model="newContent[header]">
         </td>
@@ -64,56 +61,9 @@ export default {
   data() {
     return {
       newContent:{},
-      // nextID: "",
     }
   },
-  // watch: {
-  //   selectedTable() {
-  //     this.getNextId();
-  //   },
-  // },
-  // mounted(){
-  //   this.getNextId();
-  // },
   methods:{
-    // getNextId() {
-    //   let str = "";
-    //   let num = 1;
-    //   switch (this.selectedTable) {
-    //       case "categories":
-    //           num = parseInt(this.contents[this.contents.length - 1].CategoriesID.substring(1)) + 1;
-    //           str = "C" + num;
-    //           break;
-    //       case "products":
-    //           num = parseInt(this.contents[this.contents.length - 1].ProductID.substring(1)) + 1;
-    //           str = "P" + num;
-    //           break;
-    //       case "suppliers":
-    //           num = parseInt(this.contents[this.contents.length - 1].SupplierID.substring(1)) + 1;
-    //           str = "S" + num;
-    //           break;
-    //       case "manufacturers":
-    //           num = parseInt(this.contents[this.contents.length - 1].ManufacturerID.substring(1)) + 1;
-    //           str = "M" + num;
-    //           break;
-    //       case "buyers":
-    //           num = parseInt(this.contents[this.contents.length - 1].BuyerID.substring(1)) + 1;
-    //           str = "B" + num;
-    //           break;
-    //       case "warehouses":
-    //           num = parseInt(this.contents[this.contents.length - 1].WarehouseID.substring(1)) + 1;
-    //           str = "W" + num;
-    //           break;
-    //       case "transactions":
-    //           num = parseInt(this.contents[this.contents.length - 1].TransactionsID.substring(1)) + 1;
-    //           str = "T" + num;
-    //           break;
-    //       default:
-    //           break;
-    //   }
-    //   console.log(str);
-    //   this.nextID = str;
-    // },
     addItem(newContent){
       this.$emit('createData', newContent);
       this.newContent = {}
