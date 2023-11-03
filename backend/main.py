@@ -4,7 +4,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from classDefine import BuyersRow, CategoriesRow, InventoryRow, ManufacturersRow, ProductsRow, SuppliersRow, TransactionsRow, WarehousesRow
 import databaseConnection
 import databaseAdvanced
-from mockData import data
 
 app = FastAPI()
 app.add_middleware(
