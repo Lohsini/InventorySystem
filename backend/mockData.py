@@ -1,3 +1,5 @@
+import databaseConnection
+
 data = {
     "categories_header": ["CategoriesID", "CategoriesName", "CategoriesDescription"],
     "products_header": ["ProductID", "ProductName", "Price", "Cost", "CategoriesID", "SupplierID", "ManufacturerID"],
@@ -40,3 +42,5 @@ data = {
         {"TransactionsID": 2, "BuyerID": 2, "ProductID": 2, "Quantity": 5, "TransactionsDate": "2023-10-31"},
     ]
 }
+
+

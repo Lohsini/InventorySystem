@@ -2,6 +2,7 @@ from typing import Union
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from classDefine import BuyersRow, CategoriesRow, InventoryRow, ManufacturersRow, ProductsRow, SuppliersRow, TransactionsRow, WarehousesRow
+import databaseConnection
 from mockData import data
 
 app = FastAPI()
@@ -16,43 +17,32 @@ app.add_middleware(
 # read_table API
 @app.get("/tables/get/{table_name}")
 def read_table(table_name: str):
-    return {
-        "name": table_name,
-        "headers": data[table_name+'_header'],
-        "contents": data[table_name]
-    }
+  query_result = databaseConnection.query_database_table(table_name)
+  return {
+    "name": table_name,
+    "headers": query_result["headers"],
+    "contents": query_result["contents"],
+  }
 
 # create_row API
 @app.post("/tables/create/{table_name}")
 def create_row(table_name: str, new_content: Union[CategoriesRow,ProductsRow,SuppliersRow,ManufacturersRow,BuyersRow,WarehousesRow,InventoryRow,TransactionsRow]):
-    if table_name in data:
-      data[table_name].append(new_content)
-      return {
-          "name": table_name,
-          "headers": data[table_name+'_header'],
-          "contents": data[table_name]
-      }
+  databaseConnection.create_new_row(table_name, new_content)
+  return new_content
 
 # delete_row API
-@app.put("/tables/delete/{table_name}")
-def delete_row(table_name: str, row_index: int):
-    if table_name in data:
-      table_data = data[table_name]
-      if 0 <= row_index < len(table_data):
-        table_data.pop(row_index)
-        return {
-            "name": table_name,
-            "headers": data[table_name+'_header'],
-            "contents": data[table_name]
-        }
+@app.put("/tables/delete/inventory/{product_id}/{warehouse_id}")
+def delete_inventory(product_id: str, warehouse_id: str):
+    databaseConnection.delete_inventory(product_id, warehouse_id)
+
+# delete_row API
+@app.put("/tables/delete/{table_name}/{row_id}")
+def delete_row(table_name: str, row_id: str):
+    databaseConnection.delete_row(table_name, row_id)
+    return table_name
 
 # update_row API
 @app.post("/tables/update/{table_name}")
-def update_row(table_name: str, row_index: int, new_content: Union[CategoriesRow,ProductsRow,SuppliersRow,ManufacturersRow,BuyersRow,WarehousesRow,InventoryRow,TransactionsRow]):
-    if 0 <= row_index < len(data[table_name]):
-      data[table_name][row_index] = new_content
-      return {
-          "name": table_name,
-          "headers": data[table_name+'_header'],
-          "contents": data[table_name]
-      }
+def update_row(table_name: str, new_content: Union[CategoriesRow,ProductsRow,SuppliersRow,ManufacturersRow,BuyersRow,WarehousesRow,InventoryRow,TransactionsRow]):
+    databaseConnection.update_row(table_name, new_content)
+    return "ok"
