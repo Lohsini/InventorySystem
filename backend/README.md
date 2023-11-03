@@ -23,11 +23,17 @@ go to http://127.0.0.1:8000 to see the result.
 go to http://127.0.0.1:8000/docs#/ is easier for you to test API.
 
 ### step 5:
+add password.py and only need to put one line inside
+```
+password = "your_password"
+```
+
+### step 6:
 open main.py, the main API code is inside.
 
 you can write the code for api to deliver the data here.
 
-### step 6:
+### step 7:
 open main.py, the main database code are inside.
 
 you can write the code for getting database here.
