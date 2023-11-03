@@ -32,114 +32,6 @@
         @deleteData="deleteData"
         @updateData="updateData"
       />
-
-      <!-- <table v-if="selectedTable == 'categories'" class="table">
-        <tr>
-          <th v-for="(item,index) in categories_header" :key="index">{{item}}</th>
-          <th v-if="editorOn">Edit</th>
-        </tr>
-        <tr v-for="(item,index) in categories" :key="index">
-          <td v-for="(header,key) in categories_header" :key="key">
-            <span v-if="!editorOn">{{item[header]}}</span>
-            <input type="text" v-if="editorOn" v-model="item[header]">
-          </td>
-          <td v-if="editorOn">
-            <button class="update btn btn-primary" @click="updateItem(item,index)">
-              update
-            </button>
-            <button class="btn btn-danger" @click="dropItem(item,index)">
-              Drop
-            </button>
-          </td>
-        </tr>
-        <tr>
-          <td v-for="(header,key) in categories_header" :key="key">
-            <input v-if="editorOn" type="text" :placeholder="header" v-model="newContent[header]">
-          </td>
-          <td v-if="editorOn">
-            <button class="btn btn-success" @click="addItem(newContent)">
-              Add
-            </button>
-          </td>
-        </tr>
-      </table>
-
-      <table v-if="selectedTable == 'products'" class="table">
-        <tr>
-          <th v-for="(item,index) in products_header" :key="index">{{item}}</th>
-        </tr>
-        <tr v-for="(item,index) in products" :key="index">
-          <td v-for="(header,key) in products_header" :key="key">
-            {{item[header]}}
-          </td>
-        </tr>
-      </table>
-      
-      <table v-if="selectedTable == 'suppliers'" class="table">
-        <tr>
-          <th v-for="(item,index) in suppliers_header" :key="index">{{item}}</th>
-        </tr>
-        <tr v-for="(item,index) in suppliers" :key="index">
-          <td v-for="(header,key) in suppliers_header" :key="key">
-            {{item[header]}}
-          </td>
-        </tr>
-      </table>
-
-      <table v-if="selectedTable == 'manufacturers'" class="table">
-        <tr>
-          <th v-for="(item,index) in manufacturers_header" :key="index">{{item}}</th>
-        </tr>
-        <tr v-for="(item,index) in manufacturers" :key="index">
-          <td v-for="(header,key) in manufacturers_header" :key="key">
-            {{item[header]}}
-          </td>
-        </tr>
-      </table>
-        
-      <table v-if="selectedTable == 'buyers'" class="table">
-        <tr>
-          <th v-for="(item,index) in buyers_header" :key="index">{{item}}</th>
-        </tr>
-        <tr v-for="(item,index) in buyers" :key="index">
-          <td v-for="(header,key) in buyers_header" :key="key">
-            {{item[header]}}
-          </td>
-        </tr>
-      </table>
-
-      <table v-if="selectedTable == 'warehouses'" class="table">
-        <tr>
-          <th v-for="(item,index) in warehouses_header" :key="index">{{item}}</th>
-        </tr>
-        <tr v-for="(item,index) in warehouses" :key="index">
-          <td v-for="(header,key) in warehouses_header" :key="key">
-            {{item[header]}}
-          </td>
-        </tr>
-      </table>
-
-      <table v-if="selectedTable == 'inventory'" class="table">
-        <tr>
-          <th v-for="(item,index) in inventory_header" :key="index">{{item}}</th>
-        </tr>
-        <tr v-for="(item,index) in inventory" :key="index">
-          <td v-for="(header,key) in inventory_header" :key="key">
-            {{item[header]}}
-          </td>
-        </tr>
-      </table>
-
-      <table v-if="selectedTable == 'transactions'" class="table">
-        <tr>
-          <th v-for="(item,index) in transactions_header" :key="index">{{item}}</th>
-        </tr>
-        <tr v-for="(item,index) in transactions" :key="index">
-          <td v-for="(header,key) in transactions_header" :key="key">
-            {{item[header]}}
-          </td>
-        </tr>
-      </table> -->
     </div>
 
   </div>
@@ -188,6 +80,15 @@ export default {
     this.getData();
   },
   methods:{
+    getRowId(item) {
+      if (item.CategoriesID) return item.CategoriesID;
+      if (item.ProductID) return item.ProductID;
+      if (item.SupplierID) return item.SupplierID;
+      if (item.ManufacturerID) return item.ManufacturerID;
+      if (item.BuyerID) return item.BuyerID;
+      if (item.WarehouseID) return item.WarehouseID;
+      if (item.TransactionsID) return item.TransactionsID;
+    },
     getData(){
       axios.get(`http://127.0.0.1:8000/tables/get/${this.selectedTable}`)
       .then((response) => {
@@ -213,22 +114,35 @@ export default {
         console.error('Error:', error);
       });
     },
-    deleteData(index){
+    deleteData(item, index){
       this.data.contents.splice(index, 1);
-      axios.put(`http://127.0.0.1:8000/tables/delete/${this.selectedTable}?row_index=${index}`)
-      .then((response) => {
-        // Handle the response data
-        const data = response.data;
-        console.log(data);
-      })
-      .catch((error) => {
-        // Handle any errors
-        console.error('Error:', error);
-      });
+      if (this.selectedTable === 'inventory') {
+        axios.put(`http://127.0.0.1:8000//tables/delete/inventory/${item.ProductID}/${item.WarehouseID}`)
+        .then((response) => {
+          // Handle the response data
+          const data = response.data;
+          console.log(data);
+        })
+        .catch((error) => {
+          // Handle any errors
+          console.error('Error:', error);
+        });
+      } else {
+        axios.put(`http://127.0.0.1:8000/tables/delete/${this.selectedTable}/${this.getRowId(item)}`)
+        .then((response) => {
+          // Handle the response data
+          const data = response.data;
+          console.log(data);
+        })
+        .catch((error) => {
+          // Handle any errors
+          console.error('Error:', error);
+        });
+      }
     },
-    updateData(newContent, index){
+    updateData(newContent){
       const body = newContent
-      axios.post(`http://127.0.0.1:8000/tables/update/${this.selectedTable}?row_index=${index}`, body)
+      axios.post(`http://127.0.0.1:8000/tables/update/${this.selectedTable}`, body)
       .then((response) => {
         // Handle the response data
         const data = response.data;

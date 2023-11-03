@@ -11,10 +11,10 @@
           <input type="text" v-if="editorOn" v-model="item[header]">
         </td>
         <td v-if="editorOn">
-          <button class="update btn btn-primary" @click="updateItem(item,index)">
+          <button class="update btn btn-primary" @click="updateItem(item)">
             update
           </button>
-          <button class="btn btn-danger" @click="dropItem(index)">
+          <button class="btn btn-danger" @click="dropItem(item, index)">
             Drop
           </button>
         </td>
@@ -64,11 +64,11 @@ export default {
       this.$emit('createData', newContent);
       this.newContent = {}
     },
-    dropItem(index) {
-      this.$emit('deleteData', index);
+    dropItem(item, index) {
+      this.$emit('deleteData', item, index);
     },
-    updateItem(item,index) {
-      this.$emit('updateData', item, index);
+    updateItem(item) {
+      this.$emit('updateData', item);
     },
   },
 }
