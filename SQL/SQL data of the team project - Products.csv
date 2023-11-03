@@ -1,0 +1,17 @@
+ProductID,ProductName,Price,Cost,CategoriesID,SupplierID,ManufacturerID
+P01,Iron,400,190,C03,S02,M06
+P02,PVC,150,65,C15,S01,M07
+P03,Oak wood,60,20,C01,S03,M09
+P04,iphone 15,999,489.5,C02,S07,M04
+P05,Model X,1990,985,C16,S16,M11
+P06,Cotton,35,7.5,C04,S05,M08
+P07,Football ball ,115,47.5,C14,S09,M14
+P08,Barbie,60,20,C13,S06,M13
+P09,Dining Table,200,90,C07,S16,M10
+P10,Computer Table,150,65,C07,S16,M12
+P11,bed sheets,25,2.5,C07,S16,M08
+P12,sewing machine,45,12.5,C05,S05,M05
+P13,Model Y,1990,985,C16,S17,M11
+P14,Ibuprofen,10,3,C11,S04,M02
+P15,Shirt,40,10,C08,S11,M01
+P16,huawei mate 60 pro,200,90,C02,S15,M03

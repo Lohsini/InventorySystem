@@ -11,8 +11,8 @@ def connect_database():
     connection = mysql.connector.connect(
           host ="localhost",
           user ="root",
-          password = "Your_password",
-          database = "Your_database"
+          password = password.password,
+          database = "TeamProject"
         )
     
     return connection

@@ -1,0 +1,17 @@
+CategoriesID,CategoriesName,CategoriesDescription
+C01,Wood,"Any type of wood, a primary material"
+C02,Electronics,Any electronic component or device
+C03,Metal,"Any type of metal, a primary material"
+C04,Fabric,"Any type of fabric, a primary material"
+C05,Machinery,Heavy machines to build new products or to be sold
+C06,Tools,Tools to build new products or to be sold
+C07,Furniture,"Furniture and home articles , purchased or build from metal, plastic, wood or fabric"
+C08,Clothes,"Any type of clothes, made with fabric or purchased"
+C09,Books,General books
+C10,Films,"Fils, for entertainment"
+C11,Medicines,Generic medicines
+C12,Beauty,Beauty or care products
+C13,Toys,Any kind of Toys
+C14,Sports,"Items used to play sports (balls, bats, uniforms...)"
+C15,Plastic,A primary material to be sold or to build new products
+C16,Car,Any kind of vehicle
