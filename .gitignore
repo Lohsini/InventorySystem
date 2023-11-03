@@ -1,6 +1,8 @@
 .DS_Store
 node_modules
 dist
+password.py
+password.cpython-310.pyc
 
 
 # local env files
