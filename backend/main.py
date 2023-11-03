@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from classDefine import BuyersRow, CategoriesRow, InventoryRow, ManufacturersRow, ProductsRow, SuppliersRow, TransactionsRow, WarehousesRow
 import databaseConnection
+import databaseAdvanced
 from mockData import data
 
 app = FastAPI()
@@ -14,6 +15,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ----------- basic -----------
 # read_table API
 @app.get("/tables/get/{table_name}")
 def read_table(table_name: str):
@@ -46,3 +48,16 @@ def delete_row(table_name: str, row_id: str):
 def update_row(table_name: str, new_content: Union[CategoriesRow,ProductsRow,SuppliersRow,ManufacturersRow,BuyersRow,WarehousesRow,InventoryRow,TransactionsRow]):
     databaseConnection.update_row(table_name, new_content)
     return "ok"
+
+# ----------- advanced -----------
+@app.get("/advanced/sales_quantity")
+def get_sales_quantity():
+  query_result = databaseAdvanced.get_sales_quantity()
+  return query_result
+
+@app.get("/advanced/products_NTILE")
+def get_products_NTILE():
+  query_result = databaseAdvanced.get_products_NTILE()
+  return query_result
+
+

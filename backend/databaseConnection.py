@@ -160,5 +160,4 @@ def update_row(table_name, item: Union[CategoriesRow,ProductsRow,SuppliersRow,Ma
   except sqlite3.Error as e:
       print(f"An error occurred: {e}")
 
-
 # connection.close()
