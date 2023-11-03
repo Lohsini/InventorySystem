@@ -162,7 +162,9 @@ h1{
   flex: 15%;
   background-color: rgba(252, 167, 21, 0.295);
   min-width: 230px;
-  max-height: calc(100vh - 178px);
+  height: 100%;
+  min-height: calc(100vh - 175px);
+  max-height: calc(100vh - 175px);
   overflow: auto;
 }
 .result{

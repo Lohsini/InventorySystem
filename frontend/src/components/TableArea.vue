@@ -102,35 +102,40 @@ export default {
       })
       .catch((error) => {
         // Handle any errors
-        console.error('Error:', error);
+        console.error("Error: Fail", error);
+        window.alert("Error: Fail");
       });
     },
     createData(newContent){
-      this.data.contents.push(newContent);
       const body = newContent;
       axios.post(`http://127.0.0.1:8000/tables/create/${this.selectedTable}`, body)
       .then((response) => {
         // Handle the response data
         const data = response.data;
         console.log(data);
+        this.data.contents.push(newContent);
+        window.alert("Success");
       })
       .catch((error) => {
         // Handle any errors
-        console.error('Error:', error);
+        console.error("Error: Fail", error);
+        window.alert("Error: Fail");
       });
     },
     deleteData(item, index){
-      this.data.contents.splice(index, 1);
       if (this.selectedTable === 'inventory') {
         axios.put(`http://127.0.0.1:8000//tables/delete/inventory/${item.ProductID}/${item.WarehouseID}`)
         .then((response) => {
           // Handle the response data
           const data = response.data;
           console.log(data);
+          window.alert("Success");
+          this.data.contents.splice(index, 1);
         })
         .catch((error) => {
           // Handle any errors
-          console.error('Error:', error);
+          console.error("Error: Fail", error);
+          window.alert("Error: Fail");
         });
       } else {
         axios.put(`http://127.0.0.1:8000/tables/delete/${this.selectedTable}/${this.getRowId(item)}`)
@@ -138,10 +143,13 @@ export default {
           // Handle the response data
           const data = response.data;
           console.log(data);
+          window.alert("Success");
+          this.data.contents.splice(index, 1);
         })
         .catch((error) => {
           // Handle any errors
-          console.error('Error:', error);
+          console.error("Error: Fail", error);
+          window.alert("Error: Fail");
         });
       }
     },
@@ -152,10 +160,12 @@ export default {
         // Handle the response data
         const data = response.data;
         console.log(data);
+        window.alert("Success");
       })
       .catch((error) => {
         // Handle any errors
-        console.error('Error:', error);
+        console.error("Error: Fail", error);
+        window.alert("Error: Fail");
       });
     },
     capitalizeFirstLetter(string) {
@@ -204,7 +214,8 @@ h1{
   flex: 15%;
   background-color: rgba(252, 167, 21, 0.295);
   min-width: 230px;
-  max-height: calc(100vh - 178px);
+  min-height: calc(100vh - 175px);
+  max-height: calc(100vh - 175px);
   overflow: auto;
 }
 .result{
