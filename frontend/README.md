@@ -6,9 +6,15 @@ Project setup
 ```
 npm install
 ```
+or
+
+Install Node.js at this link:
+https://nodejs.org/en/download 
 
 ### step 2: 
 Compiles and hot-reloads for development
+
+or you can run on Windows Powershell
 ```
 npm run serve
 ```
