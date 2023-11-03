@@ -29,6 +29,7 @@
 
 <script>
 import Table from './Table.vue'
+import axios from 'axios';
 
 export default {
   name: 'TableArea',
@@ -37,7 +38,8 @@ export default {
   },
   data() {
     return {
-      selectedTable: "",
+      data:{},
+      selectedTable: "Count the number of products purchased in each category", // default
       tables: [
         "Count the number of products purchased in each category",
         "Analyze NTile distribution of total purchases for each product in descending order",
@@ -69,31 +71,62 @@ export default {
         "Find the First and Last Transaction Dates for Each Product",
         "Calculate the total cost of a purchase for a specific product and quantity"
       ],
-
-      test_header:["CategoriesID","CategoriesName","Total_Products_Purchased"],
-      test:[
-        {"CategoriesID": 1, "CategoriesName": "CategoriesName", "Total_Products_Purchased":  30},
-        {"CategoriesID": 2, "CategoriesName": "CategoriesName2", "Total_Products_Purchased":  60},
-      ],
     };
   },
   computed: {
     headers() {
-      return this.test_header;
+      return this.data.headers;
     },
     contents() {
-      return this.test;
+      return this.data.contents;
     }
+  },
+  watch: {
+    selectedTable() {
+      this.fetchData();
+    },
   },
   mounted(){
     if (this.tables) {
       this.selectedTable = this.tables[0]
     }
+    this.fetchData();
   },
   methods:{
     capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
+    getSalesQuantity(){
+      axios.get("http://127.0.0.1:8000/advanced/sales_quantity")
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+      });
+    },
+    getProductsNTILE(){
+      axios.get("http://127.0.0.1:8000/advanced/products_NTILE")
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+      });
+    },
+    fetchData() {
+      if (this.selectedTable === "Count the number of products purchased in each category") {
+        this.getSalesQuantity();
+      } else if(this.selectedTable === "Analyze NTile distribution of total purchases for each product in descending order") {
+        this.getProductsNTILE();
+      } else {
+        this.data.headers = ['Not available']
+      }
+    }
   },
 }
 </script>
@@ -149,6 +182,7 @@ h1{
   text-align: left;
 }
 .table_radio label{
-  margin-left: 5px;
+  margin-left: 0px;
+  margin-bottom: 10px;
 }
 </style>

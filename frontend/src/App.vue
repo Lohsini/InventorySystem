@@ -4,14 +4,14 @@
 
     <div class="choose-area">
       <div class="mode_radio">
-        <input v-model="mode" type="radio" name="mode" value="regular" id="regular" class="d-none">
-        <label :class="{'selectedTable': mode === 'regular'}" for="regular">regular</label>
+        <input v-model="mode" type="radio" name="mode" value="basic" id="basic" class="d-none">
+        <label :class="{'selectedTable': mode === 'basic'}" for="basic">basic</label>
         <input v-model="mode" type="radio" name="mode" value="advanced" id="advanced" class="d-none">
         <label :class="{'selectedTable': mode === 'advanced'}" for="advanced">advanced</label>
       </div>
     </div>
 
-    <TableArea v-if="mode === 'regular'"/>
+    <TableArea v-if="mode === 'basic'"/>
     <AdvancedTableArea v-if="mode === 'advanced'"/>
     
   </div>
@@ -31,8 +31,8 @@ export default {
   },
   data() {
     return {
-      mode: "regular",
-      modes:["regular", "advanced"]
+      mode: "basic",
+      modes:["basic", "advanced"]
     }
   }
 }

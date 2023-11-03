@@ -1,39 +1,44 @@
 <template>
   <div class="table-area">
 
-    <div class="container edit-area">
-      <span v-if="editorOn == true">Edit Mode</span>
-      <span v-if="editorOn == false">Read Mode</span>
-      <button class="mx-2 btn btn-primary" @click="turnOnEditor">
-        change
-      </button>
-    </div>
 
-    <h3>You can choose one table here:</h3>
-    <div class="choose-area">
-      <div class="table_radio" v-for="(item,index) in tables" :key="index">
-        <input v-model="selectedTable" type="radio" name="tables" :value="item" :id="item+index" >
-        <label :for="item+index">{{item}}</label>
+    <div class="txt">
+      <div class="side-nav"> 
+        <h3>choose one table here:</h3>
+        <div class="choose-area">
+          <div class="table_radio" v-for="(item,index) in tables" :key="index">
+            <input v-model="selectedTable" type="radio" name="tables" :value="item" :id="item+index" >
+            <label :for="item+index">{{item}}</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="result">
+        <div class="container edit-area">
+          <span v-if="editorOn == true">Edit Mode</span>
+          <span v-if="editorOn == false">Read Mode</span>
+          <button class="mx-2 btn btn-primary" @click="turnOnEditor">
+            change
+          </button>
+        </div>
+        <h1>
+          <span v-if="selectedTable">{{capitalizeFirstLetter(selectedTable)}} </span>
+          Table
+        </h1>
+        
+        <div class="container">
+          <Table 
+            :headers="headers"
+            :contents="contents"
+            :editorOn="editorOn"
+            :selectedTable="selectedTable"
+            @createData="createData"
+            @deleteData="deleteData"
+            @updateData="updateData"
+          />
+        </div>
       </div>
     </div>
-
-    <h1>
-      <span v-if="selectedTable">{{capitalizeFirstLetter(selectedTable)}} </span>
-      Table
-    </h1>
-
-    
-    <div class="container">
-      <Table 
-        :headers="headers"
-        :contents="contents"
-        :editorOn="editorOn"
-        @createData="createData"
-        @deleteData="deleteData"
-        @updateData="updateData"
-      />
-    </div>
-
   </div>
 </template>
 
@@ -81,13 +86,13 @@ export default {
   },
   methods:{
     getRowId(item) {
-      if (item.CategoriesID) return item.CategoriesID;
-      if (item.ProductID) return item.ProductID;
-      if (item.SupplierID) return item.SupplierID;
-      if (item.ManufacturerID) return item.ManufacturerID;
-      if (item.BuyerID) return item.BuyerID;
-      if (item.WarehouseID) return item.WarehouseID;
-      if (item.TransactionsID) return item.TransactionsID;
+      if (this.selectedTable === "categories") return item.CategoriesID;
+      if (this.selectedTable === "products") return item.ProductID;
+      if (this.selectedTable === "suppliers") return item.SupplierID;
+      if (this.selectedTable === "manufacturers") return item.ManufacturerID;
+      if (this.selectedTable === "buyers") return item.BuyerID;
+      if (this.selectedTable === "warehouses") return item.WarehouseID;
+      if (this.selectedTable === "transactions") return item.TransactionsID;
     },
     getData(){
       axios.get(`http://127.0.0.1:8000/tables/get/${this.selectedTable}`)
@@ -102,7 +107,7 @@ export default {
     },
     createData(newContent){
       this.data.contents.push(newContent);
-      const body = newContent
+      const body = newContent;
       axios.post(`http://127.0.0.1:8000/tables/create/${this.selectedTable}`, body)
       .then((response) => {
         // Handle the response data
@@ -192,16 +197,38 @@ h3{
 h1{
   margin: 0;
 }
+.txt{
+  display: flex;
+}
+.side-nav{
+  flex: 15%;
+  background-color: rgba(252, 167, 21, 0.295);
+  min-width: 230px;
+  max-height: calc(100vh - 178px);
+  overflow: auto;
+}
+.result{
+  display: flex;
+  flex: 85%;
+  flex-direction: column;
+  justify-content: start;
+  overflow: auto;
+  max-height: calc(100vh - 178px);
+}
 .choose-area{
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
   margin-bottom: 50px;
   margin-top: 20px;
+  width: 200px;
 }
 .table_radio{
-  margin: 0 10px;
+  margin: 0 20px;
+  text-align: left;
 }
 .table_radio label{
-  margin-left: 5px;
+  margin-left: 10px;
+  margin-bottom: 10px;
 }
 </style>
