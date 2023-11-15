@@ -74,9 +74,9 @@ def get_running_total_quantity():
   query_result = databaseAdvanced.get_running_total_quantity()
   return query_result
 
-@app.get("/advanced/3month_avg_price")
-def get_3month_avg_price():
-  query_result = databaseAdvanced.get_3month_avg_price()
+@app.get("/advanced/avg_price_window")
+def get_avg_price_window():
+  query_result = databaseAdvanced.get_avg_price_window()
   return query_result
 
 @app.get("/advanced/buyer_ranking")
@@ -137,4 +137,9 @@ def get_avg_price_in_categories():
 @app.get("/advanced/stock_in_warehouse")
 def get_stock_in_warehouse():
   query_result = databaseAdvanced.get_stock_in_warehouse()
+  return query_result
+
+@app.get("/advanced/stock")
+def get_stock():
+  query_result = databaseAdvanced.get_stock()
   return query_result

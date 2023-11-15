@@ -49,33 +49,22 @@ export default {
       selectedTable: "sales_quantity", // default
       tables: [
         "sales_quantity",
-        "Calculate the running total of quantities in inventory over time (OLAP)",
-        "Calculate the running total of inventory value over time",
-        "Rank the percentage of products bought from suppliers in descending order",
-        "Create a table displaying the quantity of products in each category sold by each supplier",
-        "Count different categories sold per supplier",
-        "Create a table displaying revenues, costs, and profits for each year",
-        "Create a table displaying revenues, costs, and profits for each year and month",
-        "Display the average costs, profits, and revenues for each month",
-        "List the top 5 suppliers by the number of products they supply",
-        "Find the product with the highest price",
-        "List products that are out of stock",
-        "Find the most recent transaction for each product",
-        "List products in a specific category (e.g., 'Electronics')",
-        "List all transactions made by a specific buyer",
-        "Calculate the average price of products in each category",
-        "List the products with their suppliers and manufacturers",
-        "Calculate the total quantity of a specific product in each warehouse",
-        "List the most popular product categories (top 3) by the number of products sold",
-        "Find products with the highest inventory value using a CTE",
-        "Find the Moving Average of Product Prices over a 3-Month Window",
-        "Calculate the Cumulative Quantity Sold by Buyer Over Time",
-        "Calculate the Difference in Price Between Current and Previous Transaction",
-        "Find the Product with the Highest Price in Each Category",
-        "Find the Average Price of Products in Each Category Along with the Category's Highest and Lowest Prices",
-        "Determine the Number of Transactions Occurring Each Month",
-        "Find the First and Last Transaction Dates for Each Product",
-        "Calculate the total cost of a purchase for a specific product and quantity"
+        // "Stock Quantity",
+        "Product Stock",
+        "Product Out Of Stock",
+        "Stock In Warehouse",
+        "Running total in transaction date",
+        "Average price for each product.",
+        "getbuyer_ranking",
+        "getprice_difference",
+        "getrank1_product_in_categories",
+        "getcategories_info",
+        "gettransactions_num_per_month",
+        "getproduct_info",
+        "getmost_popular_categories",
+        "getprofits",
+        "getmost_popular_supplier",
+        "getavg_price_in_categories",
       ],
       subSelection: "All",
       subTables: [],
@@ -120,8 +109,36 @@ export default {
         } else if (this.subSelection === "All"){
           this.getSalesQuantity();
         }
-      } else if(this.selectedTable === "Calculate the running total of quantities in inventory over time (OLAP)"){
+      } else if(this.selectedTable === "Stock In Warehouse"){
+        this.getStockInWarehouse()
+      } else if(this.selectedTable === "Product Stock"){
+        this.getStock()
+      } else if(this.selectedTable === "Product Out Of Stock"){
+        this.getProductOutOfStock()
+      } else if(this.selectedTable === "Running total in transaction date"){
         this.getRunningTotal();
+      } else if(this.selectedTable === "Average price for each product."){
+        this.getAvgPriceWindow()
+      } else if(this.selectedTable === "getbuyer_ranking"){
+        this.getbuyer_ranking()
+      } else if(this.selectedTable === "getprice_difference"){
+        this.getprice_difference()
+      } else if(this.selectedTable === "getrank1_product_in_categories"){
+        this.getrank1_product_in_categories()
+      } else if(this.selectedTable === "getcategories_info"){
+        this.getcategories_info()
+      } else if(this.selectedTable === "gettransactions_num_per_month"){
+        this.gettransactions_num_per_month()
+      } else if(this.selectedTable === "getproduct_info"){
+        this.getproduct_info()
+      } else if(this.selectedTable === "getmost_popular_categories"){
+        this.getmost_popular_categories()
+      } else if(this.selectedTable === "getprofits"){
+        this.getprofits()
+      } else if(this.selectedTable === "getmost_popular_supplier"){
+        this.getmost_popular_supplier()
+      } else if(this.selectedTable === "getavg_price_in_categories"){
+        this.getavg_price_in_categories()
       } else {
         this.data.headers = ['Not available']
       }
@@ -170,6 +187,160 @@ export default {
     },
     getRunningTotal(){
       axios.get("http://127.0.0.1:8000/advanced/running_total/")
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+      });
+    },
+    getAvgPriceWindow(){
+      axios.get("http://127.0.0.1:8000/advanced/avg_price_window")
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+      });
+    },
+    getbuyer_ranking(){
+      axios.get("http://127.0.0.1:8000/advanced/buyer_ranking/")
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+      });
+    },
+    getprice_difference(){
+      axios.get("http://127.0.0.1:8000/advanced/price_difference/")
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+      });
+    },
+    getrank1_product_in_categories(){
+      axios.get("http://127.0.0.1:8000/advanced/rank1_product_in_categories/")
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+      });
+    },
+    getcategories_info(){
+      axios.get("http://127.0.0.1:8000/advanced/categories_info/")
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+      });
+    },
+    gettransactions_num_per_month(){
+      axios.get("http://127.0.0.1:8000/advanced/transactions_num_per_month/")
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+      });
+    },
+    getproduct_info(){
+      axios.get("http://127.0.0.1:8000/advanced/product_info/")
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+      });
+    },
+    getmost_popular_categories(){
+      axios.get("http://127.0.0.1:8000/advanced/most_popular_categories/")
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+      });
+    },
+    getprofits(){
+      axios.get("http://127.0.0.1:8000/advanced/profits/")
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+      });
+    },
+    getmost_popular_supplier(){
+      axios.get("http://127.0.0.1:8000/advanced/most_popular_supplier/")
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+      });
+    },
+    getProductOutOfStock(){
+      axios.get("http://127.0.0.1:8000/advanced/product_out_of_stock/")
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+      });
+    },
+    getavg_price_in_categories(){
+      axios.get("http://127.0.0.1:8000/advanced/avg_price_in_categories/")
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+      });
+    },
+    getStockInWarehouse(){
+      axios.get("http://127.0.0.1:8000/advanced/stock_in_warehouse/")
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+      });
+    },
+    getStock(){
+      axios.get("http://127.0.0.1:8000/advanced/stock/")
       .then((response) => {
         // Handle the response data
         this.data = response.data;

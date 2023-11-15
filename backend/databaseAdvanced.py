@@ -13,7 +13,7 @@ def get_sales_quantity_categories(NTILENum):
       Categories.CategoriesName, 
       SUM(Transactions.Quantity) as Quantity_Sold,
       NTILE({NTILENum}) OVER (ORDER BY SUM(Transactions.Quantity) DESC) as {NTILENum}Tile,
-      PERCENT_RANK() OVER (ORDER BY SUM(Transactions.Quantity) DESC) * 100 as Percentage_Rank
+      ROUND(PERCENT_RANK() OVER (ORDER BY SUM(Transactions.Quantity) DESC) * 100, 2) as Percentage_Rank
     FROM 
       Transactions 
     JOIN 
@@ -46,7 +46,7 @@ def get_sales_quantity_products(NTILENum):
       Categories.CategoriesName, 
       SUM(Transactions.Quantity) as Quantity_Sold,
       NTILE({NTILENum}) OVER (ORDER BY SUM(Transactions.Quantity) DESC) as {NTILENum}Tile,
-      PERCENT_RANK() OVER (ORDER BY SUM(Transactions.Quantity) DESC) * 100 as Percentage_Rank
+      ROUND(PERCENT_RANK() OVER (ORDER BY SUM(Transactions.Quantity) DESC) * 100, 2) as Percentage_Rank
     FROM 
         Transactions 
     JOIN 
@@ -168,29 +168,6 @@ def get_most_popular_supplier():
 
   return data
 
-#11
-def get_product_out_of_stock():
-  query = """
-    SELECT 
-      p.ProductName, 
-      i.Quantity
-    FROM 
-      products p
-    LEFT JOIN 
-      inventory i ON p.ProductID = i.ProductID
-    WHERE 
-      i.Quantity = 0;
-    """
-  # execute
-  cursor.execute(query)
-
-  # get result
-  result = cursor.fetchall()
-
-  data = get_result_from_database(result, cursor)
-
-  return data
-
 #15 好像不太有用
 def get_avg_price_in_categories():
   query = """
@@ -214,19 +191,74 @@ def get_avg_price_in_categories():
 
   return data
 
+#11
+def get_product_out_of_stock():
+  query = """
+    SELECT 
+      p.ProductName, 
+      i.Quantity
+    FROM 
+      products p
+    LEFT JOIN 
+      inventory i ON p.ProductID = i.ProductID
+    WHERE 
+      i.Quantity = 0;
+    """
+  # execute
+  cursor.execute(query)
+
+  # get result
+  result = cursor.fetchall()
+
+  data = get_result_from_database(result, cursor)
+
+  return data
+
+#17-2
+def get_stock():
+  query = """
+    SELECT 
+      p.ProductID,
+      p.ProductName, 
+      w.State,
+      w.City,
+      i.Quantity
+    FROM 
+      Products p
+    JOIN 
+      Inventory i ON p.ProductID = i.ProductID
+    JOIN 
+      Warehouses w ON i.WarehouseID = w.WarehouseID
+    ORDER BY
+      p.ProductID
+  """
+  # execute
+  cursor.execute(query)
+
+  # get result
+  result = cursor.fetchall()
+
+  data = get_result_from_database(result, cursor)
+
+  return data
+
 #17
 def get_stock_in_warehouse():
   query = """
-  SELECT 
-    p.ProductName, 
-    w.WarehouseID, 
-    i.Quantity
-  FROM 
-    Products p
-  JOIN 
-    Inventory i ON p.ProductID = i.ProductID
-  JOIN 
-    Warehouses w ON i.WarehouseID = w.WarehouseID
+    SELECT 
+      w.State,
+      w.City,
+      p.ProductName,
+      i.Quantity
+    FROM 
+      Products p
+    JOIN 
+      Inventory i ON p.ProductID = i.ProductID
+    JOIN 
+      Warehouses w ON i.WarehouseID = w.WarehouseID
+    ORDER BY
+      w.State,
+      w.City
   """
   # execute
   cursor.execute(query)
@@ -272,8 +304,8 @@ def get_running_total_quantity():
   query = """
     SELECT 
       TransactionsDate,
-      SUM(Quantity) OVER (ORDER BY TransactionsDate) AS RunningTotal,
-      SUM(Products.Price * Transactions.Quantity) OVER (ORDER BY TransactionsDate) AS RunningTotalValue
+      SUM(Quantity) OVER (ORDER BY TransactionsDate) AS Running_Total_Item,
+      SUM(Products.Price * Transactions.Quantity) OVER (ORDER BY TransactionsDate) AS Running_Total_Value
     FROM 
       Transactions
     JOIN 
@@ -321,12 +353,12 @@ def get_highest_inventory_value():
   return data
 
 #22
-def get_3month_avg_price():
+def get_avg_price_window():
   query = """
     SELECT 
-      t.ProductID, 
-      TransactionsDate, 
-      AVG(Price) OVER (PARTITION BY ProductID ORDER BY TransactionsDate ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS MovingAvgPrice
+      t.TransactionsDate,
+      p.ProductName,
+      AVG(Price) OVER (PARTITION BY p.ProductID ORDER BY TransactionsDate ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS Avg_price_over_3_transactions_period
     FROM
       Transactions t
     JOIN 
@@ -347,7 +379,7 @@ def get_buyer_ranking():
   query = """
     SELECT 
       BuyerID, 
-      TransactionsDate, 
+      TransactionsDate,
       SUM(Quantity) OVER (PARTITION BY BuyerID ORDER BY TransactionsDate) AS Cumulative_Quantity
     FROM 
       Transactions;
