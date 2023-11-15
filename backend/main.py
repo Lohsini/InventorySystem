@@ -1,6 +1,7 @@
 from typing import Union
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from classDefine import BuyersRow, CategoriesRow, InventoryRow, ManufacturersRow, ProductsRow, SuppliersRow, TransactionsRow, WarehousesRow
 import databaseConnection
 import databaseAdvanced
@@ -13,6 +14,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+class DateTime(BaseModel):
+    start_date: str
+    end_date: str
 
 # ----------- basic -----------
 # read_table API
@@ -49,14 +54,87 @@ def update_row(table_name: str, new_content: Union[CategoriesRow,ProductsRow,Sup
     return "ok"
 
 # ----------- advanced -----------
-@app.get("/advanced/sales_quantity")
-def get_sales_quantity():
-  query_result = databaseAdvanced.get_sales_quantity()
+@app.post("/advanced/sales_quantity")
+def get_sales_quantity(dateTime: DateTime):
+  query_result = databaseAdvanced.get_sales_quantity(dateTime.start_date, dateTime.end_date)
   return query_result
 
-@app.get("/advanced/products_NTILE")
-def get_products_NTILE():
-  query_result = databaseAdvanced.get_products_NTILE()
+@app.get("/advanced/sales_quantity/Categories/{NTILENum}")
+def get_sales_quantity(NTILENum: int):
+  query_result = databaseAdvanced.get_sales_quantity_categories(NTILENum)
   return query_result
 
+@app.get("/advanced/sales_quantity/Products/{NTILENum}")
+def get_sales_quantity(NTILENum: int):
+  query_result = databaseAdvanced.get_sales_quantity_products(NTILENum)
+  return query_result
 
+@app.get("/advanced/running_total")
+def get_running_total_quantity():
+  query_result = databaseAdvanced.get_running_total_quantity()
+  return query_result
+
+@app.get("/advanced/3month_avg_price")
+def get_3month_avg_price():
+  query_result = databaseAdvanced.get_3month_avg_price()
+  return query_result
+
+@app.get("/advanced/buyer_ranking")
+def get_buyer_ranking():
+  query_result = databaseAdvanced.get_buyer_ranking()
+  return query_result
+
+@app.get("/advanced/price_difference")
+def get_price_difference():
+  query_result = databaseAdvanced.get_price_difference()
+  return query_result
+
+@app.get("/advanced/rank1_product_in_categories")
+def get_rank1_product_in_categories():
+  query_result = databaseAdvanced.get_rank1_product_in_categories()
+  return query_result
+
+@app.get("/advanced/categories_info")
+def get_categories_info():
+  query_result = databaseAdvanced.get_categories_info()
+  return query_result
+
+@app.get("/advanced/transactions_num_per_month")
+def get_transactions_num_per_month():
+  query_result = databaseAdvanced.get_transactions_num_per_month()
+  return query_result
+
+@app.get("/advanced/product_info")
+def get_product_info():
+  query_result = databaseAdvanced.get_product_info()
+  return query_result
+
+@app.get("/advanced/most_popular_categories")
+def get_most_popular_categories():
+  query_result = databaseAdvanced.get_most_popular_categories()
+  return query_result
+
+@app.get("/advanced/profits")
+def get_profits():
+  query_result = databaseAdvanced.get_profits()
+  return query_result
+
+@app.get("/advanced/most_popular_supplier")
+def get_most_popular_supplier():
+  query_result = databaseAdvanced.get_most_popular_supplier()
+  return query_result
+
+@app.get("/advanced/product_out_of_stock")
+def get_product_out_of_stock():
+  query_result = databaseAdvanced.get_product_out_of_stock()
+  return query_result
+
+@app.get("/advanced/avg_price_in_categories")
+def get_avg_price_in_categories():
+  query_result = databaseAdvanced.get_avg_price_in_categories()
+  return query_result
+
+@app.get("/advanced/stock_in_warehouse")
+def get_stock_in_warehouse():
+  query_result = databaseAdvanced.get_stock_in_warehouse()
+  return query_result

@@ -16,6 +16,13 @@
         <span v-if="selectedTable">{{capitalizeFirstLetter(selectedTable)}}</span>
       </h1>
 
+      <div>
+        <div v-for="(item,index) in subTables" :key="index">
+          <input v-model="subSelection" type="radio" name="subTables" :value="item" :id="item+index" >
+          <label :for="item+index">{{item}}</label>
+        </div>
+      </div>
+
       <div class="container">
         <Table 
           :headers="headers"
@@ -39,10 +46,11 @@ export default {
   data() {
     return {
       data:{},
-      selectedTable: "Count the number of products purchased in each category", // default
+      selectedTable: "sales_quantity", // default
       tables: [
-        "Count the number of products purchased in each category",
-        "Analyze NTile distribution of total purchases for each product in descending order",
+        "sales_quantity",
+        "Calculate the running total of quantities in inventory over time (OLAP)",
+        "Calculate the running total of inventory value over time",
         "Rank the percentage of products bought from suppliers in descending order",
         "Create a table displaying the quantity of products in each category sold by each supplier",
         "Count different categories sold per supplier",
@@ -59,8 +67,6 @@ export default {
         "List the products with their suppliers and manufacturers",
         "Calculate the total quantity of a specific product in each warehouse",
         "List the most popular product categories (top 3) by the number of products sold",
-        "Calculate the running total of quantities in inventory over time (OLAP)",
-        "Calculate the running total of inventory value over time",
         "Find products with the highest inventory value using a CTE",
         "Find the Moving Average of Product Prices over a 3-Month Window",
         "Calculate the Cumulative Quantity Sold by Buyer Over Time",
@@ -71,6 +77,8 @@ export default {
         "Find the First and Last Transaction Dates for Each Product",
         "Calculate the total cost of a purchase for a specific product and quantity"
       ],
+      subSelection: "All",
+      subTables: [],
     };
   },
   computed: {
@@ -83,6 +91,9 @@ export default {
   },
   watch: {
     selectedTable() {
+      this.fetchTable();
+    },
+    subSelection() {
       this.fetchData();
     },
   },
@@ -90,43 +101,84 @@ export default {
     if (this.tables) {
       this.selectedTable = this.tables[0]
     }
-    this.fetchData();
+    this.fetchTable();
   },
   methods:{
+    fetchTable(){
+      if (this.selectedTable === "sales_quantity") {
+        this.subTables = ["All", "Group By Products", "Group By Categories"];
+        this.subSelection = this.subTables[0];
+      }
+      this.fetchData()
+    },
+    fetchData() {
+      if (this.selectedTable === "sales_quantity") {
+        if (this.subSelection === "Group By Products") {
+          this.getSalesQuantityProducts();
+        } else if (this.subSelection === "Group By Categories"){
+          this.getSalesQuantityCategories();
+        } else if (this.subSelection === "All"){
+          this.getSalesQuantity();
+        }
+      } else if(this.selectedTable === "Calculate the running total of quantities in inventory over time (OLAP)"){
+        this.getRunningTotal();
+      } else {
+        this.data.headers = ['Not available']
+      }
+    },
     capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
     getSalesQuantity(){
-      axios.get("http://127.0.0.1:8000/advanced/sales_quantity")
-      .then((response) => {
-        // Handle the response data
-        this.data = response.data;
-      })
-      .catch((error) => {
-        // Handle any errors
-        console.error('Error:', error);
-      });
-    },
-    getProductsNTILE(){
-      axios.get("http://127.0.0.1:8000/advanced/products_NTILE")
-      .then((response) => {
-        // Handle the response data
-        this.data = response.data;
-      })
-      .catch((error) => {
-        // Handle any errors
-        console.error('Error:', error);
-      });
-    },
-    fetchData() {
-      if (this.selectedTable === "Count the number of products purchased in each category") {
-        this.getSalesQuantity();
-      } else if(this.selectedTable === "Analyze NTile distribution of total purchases for each product in descending order") {
-        this.getProductsNTILE();
-      } else {
-        this.data.headers = ['Not available']
+      const body = {
+        start_date: "2023-01-01",
+        end_date: "2023-12-31",
       }
-    }
+      axios.post("http://127.0.0.1:8000/advanced/sales_quantity", body)
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+      });
+    },
+    getSalesQuantityCategories(){
+      const NTILENum = 4;
+      axios.get(`http://127.0.0.1:8000/advanced/sales_quantity/Categories/${NTILENum}`)
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+      });
+    },
+    getSalesQuantityProducts(){
+      const NTILENum = 3;
+      axios.get(`http://127.0.0.1:8000/advanced/sales_quantity/Products/${NTILENum}`)
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+      });
+    },
+    getRunningTotal(){
+      axios.get("http://127.0.0.1:8000/advanced/running_total/")
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+      });
+    },
   },
 }
 </script>
