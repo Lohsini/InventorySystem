@@ -54,29 +54,29 @@ def update_row(table_name: str, new_content: Union[CategoriesRow,ProductsRow,Sup
     return "ok"
 
 # ----------- advanced -----------
-@app.post("/advanced/sales_quantity")
-def get_sales_quantity(dateTime: DateTime):
-  query_result = databaseAdvanced.get_sales_quantity(dateTime.start_date, dateTime.end_date)
+@app.post("/advanced/quantity_sold")
+def get_quantity_sold(dateTime: DateTime):
+  query_result = databaseAdvanced.get_quantity_sold(dateTime.start_date, dateTime.end_date)
   return query_result
 
-@app.get("/advanced/sales_quantity/Categories/{NTILENum}")
-def get_sales_quantity(NTILENum: int):
-  query_result = databaseAdvanced.get_sales_quantity_categories(NTILENum)
+@app.get("/advanced/quantity_sold/categories/{NTILENum}")
+def get_quantity_sold(NTILENum: int):
+  query_result = databaseAdvanced.get_quantity_sold_categories(NTILENum)
   return query_result
 
-@app.get("/advanced/sales_quantity/Products/{NTILENum}")
-def get_sales_quantity(NTILENum: int):
-  query_result = databaseAdvanced.get_sales_quantity_products(NTILENum)
+@app.get("/advanced/quantity_sold/products/{NTILENum}")
+def get_quantity_sold(NTILENum: int):
+  query_result = databaseAdvanced.get_quantity_sold_products(NTILENum)
   return query_result
 
-@app.get("/advanced/running_total")
-def get_running_total_quantity():
-  query_result = databaseAdvanced.get_running_total_quantity()
+@app.get("/advanced/cumulative_revenue_in_date")
+def get_cumulative_revenue_in_date():
+  query_result = databaseAdvanced.get_cumulative_revenue_in_date()
   return query_result
 
-@app.get("/advanced/avg_price_window")
-def get_avg_price_window():
-  query_result = databaseAdvanced.get_avg_price_window()
+@app.get("/advanced/avg_subtotal_window")
+def get_avg_subtotal_window():
+  query_result = databaseAdvanced.get_avg_subtotal_window()
   return query_result
 
 @app.get("/advanced/buyer_ranking")
@@ -97,11 +97,6 @@ def get_rank1_product_in_categories():
 @app.get("/advanced/categories_info")
 def get_categories_info():
   query_result = databaseAdvanced.get_categories_info()
-  return query_result
-
-@app.get("/advanced/transactions_num_per_month")
-def get_transactions_num_per_month():
-  query_result = databaseAdvanced.get_transactions_num_per_month()
   return query_result
 
 @app.get("/advanced/product_info")
@@ -139,7 +134,7 @@ def get_stock_in_warehouse():
   query_result = databaseAdvanced.get_stock_in_warehouse()
   return query_result
 
-@app.get("/advanced/stock")
-def get_stock():
-  query_result = databaseAdvanced.get_stock()
+@app.get("/advanced/product_stock")
+def get_product_stock():
+  query_result = databaseAdvanced.get_product_stock()
   return query_result
