@@ -1,7 +1,5 @@
 <template>
   <div class="table-area">
-
-
     <div class="txt">
       <div class="side-nav"> 
         <h3>choose one table here:</h3>
@@ -32,6 +30,7 @@
             :contents="contents"
             :editorOn="editorOn"
             :selectedTable="selectedTable"
+            :idList="idList"
             @createData="createData"
             @deleteData="deleteData"
             @updateData="updateData"
@@ -66,6 +65,15 @@ export default {
         "inventory",
         "transactions"
       ],
+      idList:{
+        categoriesIdList:[],
+        productsIdList:[],
+        suppliersIdList:[],
+        manufacturersIdList:[],
+        buyersIdList:[],
+        warehousesIdList:[],
+        transactionsIdList:[]
+      }
     };
   },
   computed: {
@@ -81,8 +89,13 @@ export default {
       this.getData();
     },
   },
-  mounted() {
-    this.getData();
+  async mounted() {
+     for (let index = 0; index < this.tables.length; index++) {
+      const table = this.tables[index];
+      this.selectedTable = table;
+      await this.getData(); 
+    }
+    this.selectedTable = this.tables[0];
   },
   methods:{
     getRowId(item) {
@@ -94,11 +107,50 @@ export default {
       if (this.selectedTable === "warehouses") return item.WarehouseID;
       if (this.selectedTable === "transactions") return item.TransactionsID;
     },
-    getData(){
-      axios.get(`http://127.0.0.1:8000/tables/get/${this.selectedTable}`)
+    async getData(){
+      await axios.get(`http://127.0.0.1:8000/tables/get/${this.selectedTable}`)
       .then((response) => {
         // Handle the response data
         this.data = response.data;
+        if (this.selectedTable !== 'inventory') {
+          const idName = this.data.headers[0];
+          if (this.selectedTable === "categories") {
+            this.idList.categoriesIdList = [];
+            this.data.contents.forEach(content => {
+              this.idList.categoriesIdList.push(content[idName]);
+            });
+          } else if (this.selectedTable === "products") {
+            this.idList.productsIdList = [];
+            this.data.contents.forEach(content => {
+              this.idList.productsIdList.push(content[idName]);
+            });
+          } else if (this.selectedTable === "suppliers") {
+            this.idList.suppliersIdList = [];
+            this.data.contents.forEach(content => {
+              this.idList.suppliersIdList.push(content[idName]);
+            });
+          } else if (this.selectedTable === "manufacturers") {
+            this.idList.manufacturersIdList = [];
+            this.data.contents.forEach(content => {
+              this.idList.manufacturersIdList.push(content[idName]);
+            });
+          } else if (this.selectedTable === "buyers") {
+            this.idList.buyersIdList = [];
+            this.data.contents.forEach(content => {
+              this.idList.buyersIdList.push(content[idName]);
+            });
+          } else if (this.selectedTable === "warehouses") {
+            this.idList.warehousesIdList = [];
+            this.data.contents.forEach(content => {
+              this.idList.warehousesIdList.push(content[idName]);
+            });
+          } else if (this.selectedTable === "transactions") {
+            this.idList.transactionsIdList = [];
+            this.data.contents.forEach(content => {
+              this.idList.transactionsIdList.push(content[idName]);
+            });
+          }
+        }
       })
       .catch((error) => {
         // Handle any errors
