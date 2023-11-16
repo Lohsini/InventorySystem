@@ -9,11 +9,11 @@ from classDefine import BuyersRow, CategoriesRow, InventoryRow, ManufacturersRow
 def connect_database():
   try:
     connection = mysql.connector.connect(
-          host ="localhost",
-          user ="root",
-          password = password.password,
-          database = "TeamProject"
-        )
+      host ="localhost",
+      user ="root",
+      password = password.password,
+      database = "TeamProject"
+    )
     
     return connection
   
@@ -148,8 +148,8 @@ def update_row(table_name, item: Union[CategoriesRow,ProductsRow,SuppliersRow,Ma
       query = "UPDATE Warehouses SET State = %s, City = %s WHERE WarehouseID = %s"
       row = item.State, item.City, item.WarehouseID
     elif table_name == "inventory":
-      query = "UPDATE Inventory SET Quantity = %s WHERE ProductID = %s"
-      row = item.Quantity, item.ProductID
+      query = "UPDATE Inventory SET Quantity = %s WHERE ProductID = %s and WarehouseID = %s"
+      row = item.Quantity, item.ProductID, item.WarehouseID
     elif table_name == "transactions":
       query = "UPDATE Transactions SET BuyerID = %s, ProductID = %s, Quantity = %s, TransactionsDate = %s WHERE TransactionsID = %s"
       row = item.BuyerID, item.ProductID, item.Quantity, item.TransactionsDate, item.TransactionsID

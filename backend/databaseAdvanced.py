@@ -423,15 +423,15 @@ def get_rank1_product_in_categories():
       ProductName, 
       Price
     FROM (
-        SELECT 
-          c.CategoriesName, 
-          p.ProductName, 
-          p.Price,
-          ROW_NUMBER() OVER (PARTITION BY c.CategoriesID ORDER BY p.Price DESC) AS `Rank`
-        FROM 
-          Categories c
-        JOIN 
-          Products p ON c.CategoriesID = p.CategoriesID
+      SELECT 
+        c.CategoriesName, 
+        p.ProductName, 
+        p.Price,
+        ROW_NUMBER() OVER (PARTITION BY c.CategoriesID ORDER BY p.Price DESC) AS `Rank`
+      FROM 
+        Categories c
+      JOIN 
+        Products p ON c.CategoriesID = p.CategoriesID
     ) ranked
     WHERE 
       `Rank` = 1;
