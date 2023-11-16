@@ -44,6 +44,8 @@ export default {
   display: flex;
   justify-content: center;
   padding-bottom: 30px;
+  box-shadow: 0 8px 10px #2c3e5019;
+  padding-left: 230px;
 }
 
 .choose-area .mode_radio label{
@@ -68,7 +70,7 @@ export default {
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Quicksand, Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

@@ -4,8 +4,8 @@
       <div class="side-nav"> 
         <div class="choose-area">
           <div class="table_radio" v-for="(item,index) in sections" :key="index">
-            <input v-model="selectedSections" type="radio" name="sections" :value="item" :id="item+index" >
-            <label :for="item+index">{{item}}</label>
+            <input v-model="selectedSections" type="radio" name="sections" :value="item" :id="item+index" class="d-none">
+            <label :for="item+index" :class="{ 'selected-label': selectedSections === item }">{{item}}</label>
           </div>
         </div>
       </div>
@@ -440,11 +440,18 @@ h1{
   margin-top: 20px;
 }
 .choose-area .table_radio{
-  margin: 0 20px;
   text-align: left;
 }
 .choose-area .table_radio label{
-  margin-left: 10px;
-  margin-bottom: 10px;
+  padding: 20px;
+  height: 50px;
+  width: 200px;
+}
+.choose-area .table_radio label:hover{
+  cursor: pointer;
+}
+.selected-label{
+  background-color: burlywood;
+  font-weight: 900;
 }
 </style>

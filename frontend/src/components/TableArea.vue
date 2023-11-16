@@ -2,20 +2,19 @@
   <div class="table-area">
     <div class="txt">
       <div class="side-nav"> 
-        <h3>choose one table here:</h3>
         <div class="choose-area">
           <div class="table_radio" v-for="(item,index) in tables" :key="index">
-            <input v-model="selectedTable" type="radio" name="tables" :value="item" :id="item+index" >
-            <label :for="item+index">{{item}}</label>
+            <input v-model="selectedTable" type="radio" name="tables" :value="item" :id="item+index" class="d-none">
+            <label :for="item+index" :class="{ 'selected-label': selectedTable === item }">{{capitalizeFirstLetter(item)}}</label>
           </div>
         </div>
       </div>
 
       <div class="result">
         <div class="container edit-area">
-          <span v-if="editorOn == true">Edit Mode</span>
-          <span v-if="editorOn == false">Read Mode</span>
-          <button class="mx-2 btn btn-primary" @click="turnOnEditor">
+          <span v-if="editorOn == true"><i class="icon fas fa-pen"></i> Edit Mode</span>
+          <span v-if="editorOn == false"><i class="icon fas fa-eye"></i> Read-only Mode</span>
+          <button class="change-btn mx-2 btn btn-primary" @click="turnOnEditor">
             change
           </button>
         </div>
@@ -73,7 +72,7 @@ export default {
         buyersIdList:[],
         warehousesIdList:[],
         transactionsIdList:[]
-      }
+      },
     };
   },
   computed: {
@@ -243,11 +242,24 @@ export default {
   justify-content: flex-end;
   margin-top: 20px;
 }
+.edit-area .icon{
+  padding: 0;
+  margin: 0;
+  margin-right: 10px;
+  align-self: center;
+}
 .edit-area span{
-  border: solid 1px black;
-  border-radius: 2px;
-  color: black;
-  width: 100px;
+  align-self: center;
+  background-color: rgb(243, 193, 29);
+  width: 200px;
+  border-radius: 30px;
+}
+.change-btn{
+  background-color: #2c3e50;
+}
+.btn:hover{
+  background-color: #2c3e50ca;
+  border: #2c3e502b solid 1px;
 }
 button{
   padding: 0 6px;
@@ -287,11 +299,18 @@ h1{
   width: 200px;
 }
 .table_radio{
-  margin: 0 20px;
   text-align: left;
 }
 .table_radio label{
-  margin-left: 10px;
-  margin-bottom: 10px;
+  padding: 20px;
+  height: 50px;
+  width: 200px;
+}
+.table_radio label:hover{
+  cursor: pointer;
+}
+.selected-label{
+  background-color: burlywood;
+  font-weight: 900;
 }
 </style>
