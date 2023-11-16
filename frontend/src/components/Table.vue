@@ -31,7 +31,7 @@
             disabled 
           >
           <input 
-            v-if="editorOn && key > 0 && header !== 'CategoriesID' && header !== 'ProductID' && header !== 'SupplierID' && header !== 'ManufacturerID' && header !== 'BuyerID'" 
+            v-if="editorOn && key > 0 && header !== 'CategoriesID' && header !== 'ProductID' && header !== 'SupplierID' && header !== 'ManufacturerID' && header !== 'BuyerID' && header !== 'TransactionsDate'" 
             type="text"
             :placeholder="header" 
             v-model="newContent[header]"
@@ -81,6 +81,15 @@
             <option selected disabled value="">BuyerID</option>
             <option v-for="(id, key) in idList.buyersIdList" :key="key" :value="id">{{id}}</option>
           </select>
+          <b-form-datepicker
+            v-if="editorOn && key > 0 && header === 'TransactionsDate'" 
+            :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
+            id="datepicker"
+            v-model="newContent.TransactionsDate" 
+            class="datepicker"
+            locale="en-US"
+          >
+          </b-form-datepicker>
         </td>
         <td v-if="editorOn">
           <button class="add-btn btn btn-success" @click="addItem(newContent)">
@@ -171,6 +180,7 @@ export default {
       newContent:{
       },
       nextID: "",
+      hideHeader: true,
     }
   },
   watch: {
@@ -218,7 +228,10 @@ tr .disabled_input:hover{
   cursor: not-allowed;
 }
 select{
-  width: 95%;
+  width: 100%;
+  border: solid #ddd 1px;
+  border-radius: 5px;
+  height: 38px;
 }
 th{
   font-weight: 600;
@@ -240,8 +253,10 @@ td span{
   margin: 0;
 }
 td input{
-  width: 95%;
-  border: solid #555 1px;
+  width: 100%;
+  border: solid #ddd 1px;
+  border-radius: 5px;
+  height: 38px;
 }
 .update{
   margin-right: 5px;
