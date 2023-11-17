@@ -94,9 +94,9 @@ def get_rank1_product_in_categories():
   query_result = databaseAdvanced.get_rank1_product_in_categories()
   return query_result
 
-@app.get("/advanced/categories_info")
-def get_categories_info():
-  query_result = databaseAdvanced.get_categories_info()
+@app.get("/advanced/state_revenue")
+def get_state_revenue():
+  query_result = databaseAdvanced.get_state_revenue()
   return query_result
 
 @app.get("/advanced/product_info")
@@ -104,9 +104,9 @@ def get_product_info():
   query_result = databaseAdvanced.get_product_info()
   return query_result
 
-@app.get("/advanced/most_popular_categories")
-def get_most_popular_categories():
-  query_result = databaseAdvanced.get_most_popular_categories()
+@app.get("/advanced/sales_rank")
+def get_sales_rank():
+  query_result = databaseAdvanced.get_sales_rank()
   return query_result
 
 @app.get("/advanced/profits")
@@ -114,9 +114,9 @@ def get_profits():
   query_result = databaseAdvanced.get_profits()
   return query_result
 
-@app.get("/advanced/most_popular_supplier")
-def get_most_popular_supplier():
-  query_result = databaseAdvanced.get_most_popular_supplier()
+@app.get("/advanced/buyer_info")
+def get_buyer_info():
+  query_result = databaseAdvanced.get_buyer_info()
   return query_result
 
 @app.get("/advanced/product_out_of_stock")
@@ -124,9 +124,9 @@ def get_product_out_of_stock():
   query_result = databaseAdvanced.get_product_out_of_stock()
   return query_result
 
-@app.get("/advanced/avg_price_in_categories")
-def get_avg_price_in_categories():
-  query_result = databaseAdvanced.get_avg_price_in_categories()
+@app.get("/advanced/price_info_in_categories")
+def get_price_info_in_categories():
+  query_result = databaseAdvanced.get_price_info_in_categories()
   return query_result
 
 @app.get("/advanced/stock_in_warehouse")
@@ -137,4 +137,15 @@ def get_stock_in_warehouse():
 @app.get("/advanced/product_stock")
 def get_product_stock():
   query_result = databaseAdvanced.get_product_stock()
+  return query_result
+
+@app.get("/advanced/product_stock")
+def get_product_stock():
+  query_result = databaseAdvanced.get_product_stock()
+  return query_result
+
+
+@app.get("/advanced/total_revenue")
+def get_total_revenue():
+  query_result = databaseAdvanced.get_total_revenue()
   return query_result

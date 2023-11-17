@@ -137,21 +137,65 @@ def get_profits():
 
   return data
 
+# use UNION
+def get_total_revenue():
+  query = """
+    SELECT
+      'TotalRevenue' AS DataType,
+      p.ProductID,
+      p.ProductName,
+      SUM(t.Quantity) AS TotalSoldQuantity,
+      SUM(p.Price * t.Quantity) AS TotalRevenue
+    FROM
+      Transactions t
+    JOIN
+      Products p ON t.ProductID = p.ProductID
+    GROUP BY
+      p.ProductID, p.ProductName
+
+    UNION
+
+    SELECT
+      'TotalExpenditure' AS DataType,
+      p.ProductID,
+      p.ProductName,
+      SUM(i.Quantity) AS TotalInventory,
+      SUM(p.Cost * i.Quantity) AS TotalExpenditure
+    FROM
+      Inventory i
+    JOIN
+      Products p ON i.ProductID = p.ProductID
+    GROUP BY
+      p.ProductID, p.ProductName
+    ORDER BY
+      DataType, ProductID;
+    """
+  # execute
+  cursor.execute(query)
+
+  # get result
+  result = cursor.fetchall()
+
+  data = get_result_from_database(result, cursor)
+
+  return data
+
 # according to deliverable3 #9
-def get_most_popular_supplier():
+def get_buyer_info():
   query = """
     SELECT 
-      s.SupplierName, 
-      COUNT(p.ProductID) AS ProductCount
+      Transactions.BuyerID,
+      Buyers.name_Firstname,
+      Transactions.TransactionsDate,
+      Products.ProductName,
+      Transactions.Quantity,
+      SUM(Transactions.Quantity) OVER (PARTITION BY Buyers.BuyerID ORDER BY Transactions.TransactionsDate) AS Cumulative_Quantity
     FROM 
-      suppliers s
-    LEFT JOIN 
-      products p ON s.SupplierID = p.SupplierID
-    GROUP BY 
-      s.SupplierName
-    ORDER BY 
-      ProductCount DESC
-    LIMIT 5;
+      Transactions
+    JOIN 
+      Products ON Transactions.ProductID = Products.ProductID
+    JOIN 
+      Buyers ON Transactions.BuyerID = Buyers.BuyerID
     """
   # execute
   cursor.execute(query)
@@ -166,15 +210,24 @@ def get_most_popular_supplier():
 # according to deliverable3 #11
 def get_product_out_of_stock():
   query = """
-    SELECT 
-        p.ProductName, 
-        COALESCE(i.Quantity, 0) AS Quantity
-    FROM 
-        products p
-    LEFT JOIN 
-        inventory i ON p.ProductID = i.ProductID
-    WHERE 
-        COALESCE(i.Quantity, 0) = 0;
+    SELECT
+      P.ProductID,
+      P.ProductName,
+      S.SupplierName,
+      S.ContactDetail_Phone,
+      P.Cost,
+      COALESCE(i.Quantity, 0) AS Quantity,
+      'Not in any warehouse' AS Note
+    FROM
+      Products AS P
+    LEFT JOIN
+      Inventory AS I ON P.ProductID = I.ProductID
+    LEFT JOIN
+      Suppliers AS S ON P.SupplierID = S.SupplierID
+    WHERE
+      I.ProductID IS NULL
+    ORDER BY
+      P.ProductID
     """
   # execute
   cursor.execute(query)
@@ -194,7 +247,10 @@ def get_product_stock():
       p.ProductName, 
       w.State,
       w.City,
-      i.Quantity
+      i.Quantity,
+      p.Cost,
+      p.Cost * i.Quantity AS ProductSubTotalCost,
+      SUM(p.Cost * i.Quantity) OVER (PARTITION BY p.ProductID) AS ProductTotalCost
     FROM 
       Products p
     JOIN 
@@ -219,24 +275,27 @@ def get_product_stock():
 # according to deliverable3 #17
 def get_stock_in_warehouse():
   query = """
-    SELECT 
+    SELECT
+      w.WarehouseID,
       w.State,
       w.City,
-      c.CategoriesName,
+      p.ProductID,
       p.ProductName,
-      i.Quantity
-    FROM 
-      Products p
-    JOIN 
-      Inventory i ON p.ProductID = i.ProductID
-    JOIN 
-      Warehouses w ON i.WarehouseID = w.WarehouseID
-    JOIN 
-      Categories c ON c.CategoriesID = p.CategoriesID
+      i.Quantity,
+      p.Cost,
+      p.Cost * i.Quantity AS ProductTotalCost,
+      SUM(p.Cost * i.Quantity) OVER (PARTITION BY w.WarehouseID) AS WarehouseTotalCost
+    FROM
+      Warehouses w
+    LEFT JOIN
+      Inventory i ON w.WarehouseID = i.WarehouseID
+    LEFT JOIN
+      Products p ON i.ProductID = p.ProductID
     ORDER BY
+      w.WarehouseID,
       w.State,
       w.City,
-      c.CategoriesName
+      p.ProductID;
   """
   # execute
   cursor.execute(query)
@@ -248,26 +307,33 @@ def get_stock_in_warehouse():
 
   return data
 
-# according to deliverable3 #18
-def get_most_popular_categories():
+# use WITH
+def get_sales_rank():
   query = """
-    SELECT 
-      c.CategoriesName,
-      SUM(t.Quantity) AS Quantity_Sold,
-      SUM(p.Price*t.Quantity) AS Revenue,
-      SUM(p.Cost*t.Quantity) AS Cost, 
-      (SUM(p.Price*t.Quantity)-SUM(p.Cost*t.Quantity)) AS Profit 
-    FROM 
-      Categories c
-    LEFT JOIN 
-      Products p ON c.CategoriesID = p.CategoriesID
-    LEFT JOIN 
-      Transactions t ON p.ProductID = t.ProductID
-    GROUP BY 
-      c.CategoriesName
-    ORDER BY 
-      Quantity_Sold DESC
-    LIMIT 5;
+    WITH SalesRank AS (
+      SELECT
+        p.ProductID,
+        p.ProductName,
+        SUM(t.Quantity) AS TotalSoldQuantity,
+        SUM(p.Price * t.Quantity) AS TotalSales
+      FROM
+        Transactions t
+      JOIN
+        Products p ON t.ProductID = p.ProductID
+      GROUP BY
+        p.ProductID, p.ProductName
+    )
+
+    SELECT
+      ProductID,
+      ProductName,
+      TotalSoldQuantity,
+      TotalSales,
+      RANK() OVER (ORDER BY TotalSales DESC) AS SalesRank
+    FROM
+      SalesRank
+    ORDER BY
+      SalesRank;
     """
   # execute
   cursor.execute(query)
@@ -337,7 +403,7 @@ def get_highest_inventory_value():
 
   return data
 
-# according to deliverable3 #22
+# according to deliverable3 #22 use OLAP
 def get_avg_subtotal_window():
   query = """
     SELECT
@@ -364,8 +430,48 @@ def get_avg_subtotal_window():
 
   return data
 
-# according to deliverable3 #23
+# use WITH
 def get_buyer_ranking():
+  query = """
+    WITH CustomerPurchase AS (
+      SELECT
+        t.BuyerID,
+        b.name_Firstname AS CustomerName,
+        COUNT(t.TransactionsID) AS TotalTransactions,
+        SUM(p.Price * t.Quantity) AS TotalPurchaseAmount
+      FROM
+        Transactions t
+      JOIN
+        Buyers b ON t.BuyerID = b.BuyerID
+      JOIN
+        Products p ON t.ProductID = p.ProductID
+      GROUP BY
+        t.BuyerID, CustomerName
+    )
+
+    SELECT
+      BuyerID,
+      CustomerName,
+      TotalTransactions,
+      TotalPurchaseAmount,
+      RANK() OVER (ORDER BY TotalTransactions DESC) AS CustomerRank
+    FROM
+      CustomerPurchase
+    ORDER BY
+      CustomerRank;
+    """
+  # execute
+  cursor.execute(query)
+
+  # get result
+  result = cursor.fetchall()
+
+  data = get_result_from_database(result, cursor)
+
+  return data
+
+# according to deliverable3 #23
+def get_buyer_ranking_1():
   query = """
     SELECT 
       Transactions.BuyerID,
@@ -418,11 +524,7 @@ def get_price_difference():
 # according to deliverable3 #25
 def get_rank1_product_in_categories():
   query = """
-    SELECT 
-      CategoriesName, 
-      ProductName, 
-      Price
-    FROM (
+    WITH RankedProducts AS (
       SELECT 
         c.CategoriesName, 
         p.ProductName, 
@@ -432,7 +534,16 @@ def get_rank1_product_in_categories():
         Categories c
       JOIN 
         Products p ON c.CategoriesID = p.CategoriesID
-    ) ranked
+      WHERE
+        p.Price > 50
+    )
+
+    SELECT 
+      CategoriesName, 
+      ProductName, 
+      Price
+    FROM 
+      RankedProducts
     WHERE 
       `Rank` = 1;
     """
@@ -446,27 +557,26 @@ def get_rank1_product_in_categories():
 
   return data
 
-# according to deliverable3 #26 #15
-def get_categories_info():
+def get_state_revenue():
   query = """
-    SELECT 
-      CategoriesName, 
-      AvgPrice, 
-      MaxPrice, 
-      MinPrice
-    FROM (      
-      SELECT 
-        c.CategoriesName,
-        AVG(p.Price) AS AvgPrice,
-        MAX(p.Price) AS MaxPrice,
-        MIN(p.Price) AS MinPrice
-      FROM 
-        Categories c
-      JOIN 
-        Products p ON c.CategoriesID = p.CategoriesID
-      GROUP BY 
-        c.CategoriesName 
-    ) Subquery
+    SELECT
+      w.State,
+      t.TransactionsDate,
+      SUM(p.Price * t.Quantity) AS Revenue,
+      SUM(SUM(p.Price * t.Quantity)) OVER (PARTITION BY w.State ORDER BY t.TransactionsDate) AS SubtotalRevenue,
+      SUM(SUM(p.Price * t.Quantity)) OVER (PARTITION BY w.State) AS TotalRevenue
+    FROM
+      Inventory i
+    JOIN
+      Products p ON i.ProductID = p.ProductID
+    JOIN
+      Warehouses w ON i.WarehouseID = w.WarehouseID
+    JOIN
+      Transactions t ON t.ProductID = i.ProductID
+    GROUP BY
+      w.State, t.TransactionsDate
+    ORDER BY
+      w.State, t.TransactionsDate;
     """
   # execute
   cursor.execute(query)
@@ -479,18 +589,32 @@ def get_categories_info():
   return data
 
 # according to deliverable3 #26 #15
-def get_avg_price_in_categories():
+def get_price_info_in_categories():
   query = """
-    SELECT 
-      c.CategoriesName, 
-      AVG(p.Price) AS AvgPrice,
+    SELECT
+      c.CategoriesID,
+      c.CategoriesName,
+      ROUND(AVG(p.Price),2) AS AvgPrice,
       MAX(p.Price) AS MaxPrice,
-      MIN(p.Price) AS MinPrice
-    FROM 
+      MIN(p.Price) AS MinPrice,
+      
+      (SELECT p1.ProductName
+      FROM Products p1
+      WHERE p1.CategoriesID = c.CategoriesID
+      ORDER BY p1.Price DESC
+      LIMIT 1) AS MostExpensiveProduct,
+      
+      (SELECT p2.ProductName
+      FROM Products p2
+      WHERE p2.CategoriesID = c.CategoriesID
+      ORDER BY p2.Price ASC
+      LIMIT 1) AS CheapestProduct
+    FROM
       Categories c
-    LEFT JOIN 
+    LEFT JOIN
       Products p ON c.CategoriesID = p.CategoriesID
-    GROUP BY 
+    GROUP BY
+      c.CategoriesID,
       c.CategoriesName;
   """
   # execute
@@ -506,28 +630,29 @@ def get_avg_price_in_categories():
 # according to deliverable3 #28 #16
 def get_product_info():
   query = """
-    SELECT 
-      c.CategoriesID, 
+    SELECT
+      c.CategoriesID,
       c.CategoriesName,
-      t.ProductID, 
-      p.ProductName, 
-      s.SupplierName, 
-      m.ManufacturerName
-    FROM 
-        Transactions t
-    JOIN 
-        Products p ON t.ProductID = p.ProductID
-    JOIN 
-        Suppliers s ON p.SupplierID = s.SupplierID
-    JOIN 
-        Manufacturers m ON p.ManufacturerID = m.ManufacturerID
-    JOIN 
-        Categories c ON p.CategoriesID = c.CategoriesID
-    GROUP BY 
-        t.ProductID, 
-        p.ProductName, 
-        s.SupplierName, 
-        m.ManufacturerName;
+      p.ProductID,
+      p.ProductName,
+      s.SupplierName,
+      m.ManufacturerName,
+      w.WarehouseID,
+      i.Quantity AS InventoryQuantity
+    FROM
+      Products p
+    JOIN
+      Suppliers s ON p.SupplierID = s.SupplierID
+    JOIN
+      Manufacturers m ON p.ManufacturerID = m.ManufacturerID
+    JOIN
+      Categories c ON p.CategoriesID = c.CategoriesID
+    LEFT JOIN
+      Inventory i ON p.ProductID = i.ProductID
+    LEFT JOIN
+      Warehouses w ON i.WarehouseID = w.WarehouseID
+    ORDER BY
+      c.CategoriesID, p.ProductID;
     """
   # execute
   cursor.execute(query)

@@ -49,8 +49,8 @@ export default {
       selectedSections: "Quantity Sold", // default
       sections: [
         "Quantity Sold",
-        "Popular Ranking",
-        "Inventory",
+        "Ranking",
+        "Stock",
         "Revenue",
         "Infomation",
         "Others"
@@ -85,18 +85,16 @@ export default {
     fetchTable(){
       if (this.selectedSections === "Quantity Sold") {
         this.subTables = [
-          "Transactions Information",
           "Group By Products",
           "Group By Categories"
         ];
-      } else if (this.selectedSections === "Popular Ranking") {
+      } else if (this.selectedSections === "Ranking") {
         this.subTables = [
-          "getmost_popular_categories",
-          "getmost_popular_supplier",
-          "getrank1_product_in_categories",
-          "getbuyer_ranking"
+          "Buyer Ranking",
+          "Sales Ranking",
+          "No.1 Selling Product in Each Category (excluding products with a price <= 50)"
         ]
-      } else if (this.selectedSections === "Inventory") {
+      } else if (this.selectedSections === "Stock") {
         this.subTables = [
           "Stock In Warehouse", 
           "Product Stock", 
@@ -106,17 +104,20 @@ export default {
         this.subTables = [
           "Cumulative Revenue Group By Date",
           "Average Subtotal Group By Date", 
-          "getprofits"
+          "Profits For Each Month",
+          "StateRevenue",
+          "Total Revenue"
         ];
       } else if (this.selectedSections === "Infomation") {
         this.subTables = [
-          "getproduct_info", 
-          "getcategories_info",
-          "getavg_price_in_categories"
+          "Product Information", 
+          "Buyer Information",
+          "Transactions Information",
+          "Price Infomation In Each Categories"
         ]
       } else if (this.selectedSections === "Others") {
         this.subTables = [
-          "getprice_difference",
+          "Price Difference",
         ]
       }
       this.subSelection = this.subTables[0];
@@ -127,10 +128,8 @@ export default {
           this.getSalesQuantityProducts();
         } else if (this.subSelection === "Group By Categories"){
           this.getSalesQuantityCategories();
-        } else if (this.subSelection === "Transactions Information"){
-          this.getSalesQuantity();
         }
-      } else if(this.selectedSections === "Inventory"){
+      } else if(this.selectedSections === "Stock"){
         if (this.subSelection === "Stock In Warehouse") {
           this.getStockInWarehouse()
         } else if (this.subSelection === "Product Out Of Stock"){
@@ -143,30 +142,34 @@ export default {
           this.getCumulativeRevenueInDate();
         } else if(this.subSelection === "Average Subtotal Group By Date"){
           this.getAvgSubtotalWindow()
-        } else if(this.subSelection === "getprofits"){
-          this.getprofits()
+        } else if(this.subSelection === "Profits For Each Month"){
+          this.getProfitsPerMonth()
+        } else if (this.subSelection === "State Revenue"){
+          this.getStateRevenue()
+        } else if(this.subSelection === "Total Revenue"){
+          this.getTotalRevenue()
         }
-      } else if (this.selectedSections === "Popular Ranking") {
-        if (this.subSelection === "getmost_popular_categories") {
-          this.getmost_popular_categories()
-        } else if (this.subSelection === "getmost_popular_supplier"){
-          this.getmost_popular_supplier()
-        } else if (this.subSelection === "getrank1_product_in_categories"){
-          this.getrank1_product_in_categories()
-        } else if (this.subSelection === "getbuyer_ranking"){
-          this.getbuyer_ranking()
-        }
+      } else if (this.selectedSections === "Ranking") {
+        if (this.subSelection === "No.1 Selling Product in Each Category (excluding products with a price <= 50)"){
+          this.getNo1ProductInCategories()
+        } else if (this.subSelection === "Buyer Ranking"){
+          this.getBuyerRanking()
+        } else if(this.subSelection === "Sales Ranking") {
+          this.getSalesRank()
+        }  
       } else if (this.selectedSections === "Infomation") {
-        if (this.subSelection === "getproduct_info") {
-          this.getproduct_info()
-        } else if (this.subSelection === "getcategories_info"){
-          this.getcategories_info()
-        } else if(this.subSelection === "getavg_price_in_categories"){
-          this.getavg_price_in_categories()
+        if (this.subSelection === "Product Information") {
+          this.getProductInfo()
+        } else if(this.subSelection === "Price Infomation In Each Categories"){
+          this.getPriceInfoInCategories()
+        } else if (this.subSelection === "Transactions Information"){
+          this.getSalesQuantity();
+        } else if (this.subSelection === "Buyer Information"){
+          this.getBuyerInfo()
         }
       } else if (this.selectedSections === "Others") {
-        if (this.subSelection === "getprice_difference") {
-          this.getprice_difference()
+        if (this.subSelection === "Price Difference") {
+          this.getPriceDifference()
         }
       } else {
         this.data.headers = ['Not available']
@@ -241,7 +244,7 @@ export default {
         window.alert("Error: Fail");
       });
     },
-    getbuyer_ranking(){
+    getBuyerRanking(){
       axios.get("http://127.0.0.1:8000/advanced/buyer_ranking/")
       .then((response) => {
         // Handle the response data
@@ -253,7 +256,7 @@ export default {
         window.alert("Error: Fail");
       });
     },
-    getprice_difference(){
+    getPriceDifference(){
       axios.get("http://127.0.0.1:8000/advanced/price_difference/")
       .then((response) => {
         // Handle the response data
@@ -265,7 +268,7 @@ export default {
         window.alert("Error: Fail");
       });
     },
-    getrank1_product_in_categories(){
+    getNo1ProductInCategories(){
       axios.get("http://127.0.0.1:8000/advanced/rank1_product_in_categories/")
       .then((response) => {
         // Handle the response data
@@ -277,8 +280,8 @@ export default {
         window.alert("Error: Fail");
       });
     },
-    getcategories_info(){
-      axios.get("http://127.0.0.1:8000/advanced/categories_info/")
+    getStateRevenue(){
+      axios.get("http://127.0.0.1:8000/advanced/state_revenue/")
       .then((response) => {
         // Handle the response data
         this.data = response.data;
@@ -289,7 +292,7 @@ export default {
         window.alert("Error: Fail");
       });
     },
-    getproduct_info(){
+    getProductInfo(){
       axios.get("http://127.0.0.1:8000/advanced/product_info/")
       .then((response) => {
         // Handle the response data
@@ -301,8 +304,8 @@ export default {
         window.alert("Error: Fail");
       });
     },
-    getmost_popular_categories(){
-      axios.get("http://127.0.0.1:8000/advanced/most_popular_categories/")
+    getSalesRank(){
+      axios.get("http://127.0.0.1:8000/advanced/sales_rank/")
       .then((response) => {
         // Handle the response data
         this.data = response.data;
@@ -313,7 +316,7 @@ export default {
         window.alert("Error: Fail");
       });
     },
-    getprofits(){
+    getProfitsPerMonth(){
       axios.get("http://127.0.0.1:8000/advanced/profits/")
       .then((response) => {
         // Handle the response data
@@ -325,8 +328,8 @@ export default {
         window.alert("Error: Fail");
       });
     },
-    getmost_popular_supplier(){
-      axios.get("http://127.0.0.1:8000/advanced/most_popular_supplier/")
+    getBuyerInfo(){
+      axios.get("http://127.0.0.1:8000/advanced/buyer_info/")
       .then((response) => {
         // Handle the response data
         this.data = response.data;
@@ -349,8 +352,8 @@ export default {
         window.alert("Error: Fail");
       });
     },
-    getavg_price_in_categories(){
-      axios.get("http://127.0.0.1:8000/advanced/avg_price_in_categories/")
+    getPriceInfoInCategories(){
+      axios.get("http://127.0.0.1:8000/advanced/price_info_in_categories/")
       .then((response) => {
         // Handle the response data
         this.data = response.data;
@@ -375,6 +378,18 @@ export default {
     },
     getProductStock(){
       axios.get("http://127.0.0.1:8000/advanced/product_stock/")
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+        window.alert("Error: Fail");
+      });
+    },
+    getTotalRevenue(){
+      axios.get("http://127.0.0.1:8000/advanced/total_revenue/")
       .then((response) => {
         // Handle the response data
         this.data = response.data;
