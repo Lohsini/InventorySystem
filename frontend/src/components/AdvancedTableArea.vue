@@ -106,7 +106,8 @@ export default {
           "Average Subtotal Group By Date", 
           "Profits For Each Month",
           "StateRevenue",
-          "Total Revenue"
+          "Total Revenue",
+          "Search Profits by Category"
         ];
       } else if (this.selectedSections === "Infomation") {
         this.subTables = [
@@ -148,6 +149,8 @@ export default {
           this.getStateRevenue()
         } else if(this.subSelection === "Total Revenue"){
           this.getTotalRevenue()
+        } else if (this.subSelection === "Search Profits by Category"){
+          this.getCategoriesProfits()
         }
       } else if (this.selectedSections === "Ranking") {
         if (this.subSelection === "No.1 Selling Product in Each Category (excluding products with a price <= 50)"){
@@ -390,6 +393,19 @@ export default {
     },
     getTotalRevenue(){
       axios.get("http://127.0.0.1:8000/advanced/total_revenue/")
+      .then((response) => {
+        // Handle the response data
+        this.data = response.data;
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error:', error);
+        window.alert("Error: Fail");
+      });
+    },
+    getCategoriesProfits(){
+      const categoriesName = "Car";
+      axios.get(`http://127.0.0.1:8000/advanced/categories_profits/${categoriesName}`)
       .then((response) => {
         // Handle the response data
         this.data = response.data;

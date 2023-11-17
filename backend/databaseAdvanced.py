@@ -137,6 +137,39 @@ def get_profits():
 
   return data
 
+def get_categories_profits(CategoriesName):
+  query = f"""
+    SELECT
+      t.TransactionsID,
+      t.TransactionsDate,
+      p.ProductID,
+      p.ProductName,
+      p.Price,
+      t.Quantity,
+      p.Price * t.Quantity AS Revenue,
+      SUM(p.Price * t.Quantity) OVER (ORDER BY t.TransactionsDate) AS CumulativeRevenue,
+      SUM(p.Price * t.Quantity) OVER () AS TotalRevenue
+    FROM
+      Transactions t
+    JOIN
+      Products p ON t.ProductID = p.ProductID
+    JOIN
+      Categories c ON p.CategoriesID = c.CategoriesID
+    WHERE
+      c.CategoriesName = '{CategoriesName}'
+    ORDER BY
+      t.TransactionsDate;
+    """
+  # execute
+  cursor.execute(query)
+
+  # get result
+  result = cursor.fetchall()
+
+  data = get_result_from_database(result, cursor)
+
+  return data
+
 # use UNION
 def get_total_revenue():
   query = """

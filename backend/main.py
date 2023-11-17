@@ -149,3 +149,8 @@ def get_product_stock():
 def get_total_revenue():
   query_result = databaseAdvanced.get_total_revenue()
   return query_result
+
+@app.get("/advanced/categories_profits/{CategoriesName}")
+def get_categories_profits(CategoriesName: str):
+  query_result = databaseAdvanced.get_categories_profits(CategoriesName)
+  return query_result
