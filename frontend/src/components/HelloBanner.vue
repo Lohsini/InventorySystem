@@ -20,6 +20,6 @@ export default {
   padding: 40px;
   padding-bottom: 10px;
   background-color: antiquewhite;
-  padding-left: 230px;
+  /* padding-left: 230px; */
 }
 </style>

@@ -208,7 +208,6 @@ export default {
         this.subTables = [
           "Product Information", 
           "Buyer Information",
-          // "Transactions Information",
           "Price Infomation In Each Categories"
         ]
       } else if (this.selectedSections === "Others") {
@@ -262,8 +261,6 @@ export default {
           this.getProductInfo()
         } else if(this.subSelection === "Price Infomation In Each Categories"){
           this.getPriceInfoInCategories()
-        // } else if (this.subSelection === "Transactions Information"){
-          // this.?();
         } else if (this.subSelection === "Buyer Information"){
           this.getBuyerInfo()
         }
@@ -542,6 +539,7 @@ h3{
 h1{
   margin: 20px;
   font-size: 2rem;
+  margin-top: 50px;
 }
 
 .txt{

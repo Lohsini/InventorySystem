@@ -45,7 +45,7 @@ export default {
   justify-content: center;
   padding-bottom: 30px;
   box-shadow: 0 8px 10px #2c3e5019;
-  padding-left: 230px;
+  /* padding-left: 230px; */
 }
 
 .choose-area .mode_radio label{
