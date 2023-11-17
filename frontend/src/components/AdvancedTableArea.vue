@@ -21,6 +21,56 @@
           <span v-if="subSelection">{{capitalizeFirstLetter(subSelection)}}</span>
         </h1>
 
+        <div class="operator">
+          <div class="datepicker-area" v-if="subSelection === 'Sales Quantity'">
+            <div>
+              Start Date
+            </div>
+            <div class="datepicker">
+              <b-form-datepicker
+                :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
+                id="datepicker-start"
+                v-model="startDate" 
+                locale="en-US"
+              >
+              </b-form-datepicker>
+            </div>
+
+            <div>
+              End Date
+            </div>
+            <div class="datepicker">
+              <b-form-datepicker
+                :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
+                id="datepicker-end"
+                v-model="endDate" 
+                locale="en-US"
+              >
+              </b-form-datepicker>
+            </div>
+            <button class="search-btn mx-2 btn btn-primary" @click="searchDate">search</button>
+          </div>
+
+          <div v-if="subSelection === 'Quantity By Products'|| subSelection==='Quantity By Categories'">
+            You Can Set NTILE Here:
+            <input type="number" min="1" max="9" v-model="NTILENum">
+            <button class="search-btn mx-4 btn btn-primary" @click="searchNTILE">search</button>
+          </div>
+
+          <div v-if="subSelection === 'Search Profits by Category'">
+            Select One Category Name:
+            <select 
+              id="dropdown"
+              name="dropdown"
+              v-model="searchCategoriesName"
+            >
+              <option selected disabled value="">CategoriesName</option>
+              <option v-for="(id, key) in categoriesNameList" :key="key" :value="id">{{id}}</option>
+            </select>
+            <button class="search-btn mx-4 btn btn-primary" @click="searchData">search</button>
+          </div>
+        </div>
+
         <div class="container">
           <Table 
             :headers="headers"
@@ -48,14 +98,19 @@ export default {
       selectedSections: "Quantity Sold", // default
       sections: [
         "Quantity Sold",
+        "Revenue",
         "Ranking",
         "Stock",
-        "Revenue",
         "Infomation",
         "Others"
       ],
       subSelection: "",
       subTables: [],
+      startDate: "2022-01-01",
+      endDate: "2023-12-31",
+      searchCategoriesName: "Car",
+      categoriesNameList:[],
+      NTILENum: 4,
     };
   },
   computed: {
@@ -74,18 +129,57 @@ export default {
       this.fetchData();
     },
   },
-  mounted(){
+  async mounted(){
     if (this.sections) {
       this.selectedSections = this.sections[0]
     }
     this.fetchTable();
+
+    setTimeout(() => {
+      this.getCategoriesTable();
+    }, 3000);
+
   },
   methods:{
+    searchData(){
+      if (this.subSelection === 'Search Profits by Category') {
+        this.getCategoriesProfits();
+      }
+    },
+    searchDate(){
+      if (this.subSelection === "Sales Quantity") {
+        this.getSalesQuantity();
+      }
+    },
+    searchNTILE(){
+      if (this.subSelection === "Quantity By Products") {
+          this.getSalesQuantityProducts();
+        } else if (this.subSelection === "Quantity By Categories"){
+          this.getSalesQuantityCategories();
+        }
+    },
+    async getCategoriesTable(){
+      const selectedTable = 'categories';
+      await axios.get(`http://127.0.0.1:8000/tables/get/${selectedTable}`)
+      .then((response) => {
+        // Handle the response data
+        this.categoriesNameList = [];
+        response.data.contents.forEach(content => {
+          this.categoriesNameList.push(content.CategoriesName);
+        });
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error("Error: Fail", error);
+        window.alert("Error: Fail");
+      });
+    },
     fetchTable(){
       if (this.selectedSections === "Quantity Sold") {
         this.subTables = [
           "Quantity By Products",
-          "Quantity By Categories"
+          "Quantity By Categories",
+          "Sales Quantity"
         ];
       } else if (this.selectedSections === "Ranking") {
         this.subTables = [
@@ -101,18 +195,18 @@ export default {
         ];
       } else if (this.selectedSections === "Revenue") {
         this.subTables = [
+          "Search Profits by Category",
           "Cumulative Revenue Group By Date",
           "Average Subtotal Group By Date", 
           "Profits For Each Month",
           "State Revenue",
-          "Total Revenue",
-          "Search Profits by Category"
+          "Total Revenue"
         ];
       } else if (this.selectedSections === "Infomation") {
         this.subTables = [
           "Product Information", 
           "Buyer Information",
-          "Transactions Information",
+          // "Transactions Information",
           "Price Infomation In Each Categories"
         ]
       } else if (this.selectedSections === "Others") {
@@ -124,7 +218,9 @@ export default {
     },
     fetchData() {
       if (this.selectedSections === "Quantity Sold") {
-        if (this.subSelection === "Quantity By Products") {
+        if (this.subSelection === "Sales Quantity"){
+          this.getSalesQuantity();
+        } else if (this.subSelection === "Quantity By Products") {
           this.getSalesQuantityProducts();
         } else if (this.subSelection === "Quantity By Categories"){
           this.getSalesQuantityCategories();
@@ -164,8 +260,8 @@ export default {
           this.getProductInfo()
         } else if(this.subSelection === "Price Infomation In Each Categories"){
           this.getPriceInfoInCategories()
-        } else if (this.subSelection === "Transactions Information"){
-          this.getSalesQuantity();
+        // } else if (this.subSelection === "Transactions Information"){
+          // this.?();
         } else if (this.subSelection === "Buyer Information"){
           this.getBuyerInfo()
         }
@@ -182,8 +278,8 @@ export default {
     },
     getSalesQuantity(){
       const body = {
-        start_date: "2022-01-01",
-        end_date: "2023-12-31",
+        start_date: this.startDate,
+        end_date: this.endDate,
       }
       axios.post("http://127.0.0.1:8000/advanced/quantity_sold", body)
       .then((response) => {
@@ -197,7 +293,7 @@ export default {
       });
     },
     getSalesQuantityCategories(){
-      const NTILENum = 4;
+      const NTILENum = this.NTILENum;
       axios.get(`http://127.0.0.1:8000/advanced/quantity_sold/categories/${NTILENum}`)
       .then((response) => {
         // Handle the response data
@@ -210,7 +306,7 @@ export default {
       });
     },
     getSalesQuantityProducts(){
-      const NTILENum = 3;
+      const NTILENum = this.NTILENum;
       axios.get(`http://127.0.0.1:8000/advanced/quantity_sold/products/${NTILENum}`)
       .then((response) => {
         // Handle the response data
@@ -403,11 +499,14 @@ export default {
       });
     },
     getCategoriesProfits(){
-      const categoriesName = "Car";
+      const categoriesName = this.searchCategoriesName;
       axios.get(`http://127.0.0.1:8000/advanced/categories_profits/${categoriesName}`)
       .then((response) => {
         // Handle the response data
         this.data = response.data;
+        if (this.data.contents.length === 0) {
+          this.data.headers = ['No Data']
+        }
       })
       .catch((error) => {
         // Handle any errors
@@ -495,12 +594,36 @@ h1{
   padding-left: 25px;
   height: 100%;
   width: 100%;
-  color: #aaa;
+  color: #888;
 }
 .choose-area .table_radio .subTable-area .subTable-label:hover{
   color: #2c3e50;
+  font-weight: 500;
 }
 .choose-area .table_radio .subTable-area .subselected-label{
   color: #2c3e50;
+  font-weight: 500;
 }
+.datepicker-area{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+.datepicker-area div{
+  align-self: center;
+  margin-right: 50px;
+  margin-left: 0px;
+}
+.datepicker{
+  width: 200px;
+}
+.search-btn{
+  margin-left: 30px;
+  width: 100px;
+  align-self: center;
+}
+/* .btn:hover{
+  background-color: rgba(243, 193, 29, 0.529);
+  border: rgba(243, 193, 29, 0.529) solid 1px;
+} */
 </style>
