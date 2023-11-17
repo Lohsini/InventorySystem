@@ -85,18 +85,19 @@ export default {
   },
   watch: {
     selectedTable() {
-      this.getData();
+      this.getData(this.selectedTable);
     },
   },
-  async mounted() {
-     for (let index = 0; index < this.tables.length; index++) {
-      const table = this.tables[index];
-      this.selectedTable = table;
-      await this.getData(); 
-    }
-    this.selectedTable = this.tables[0];
+  mounted() {
+    this.init();
   },
   methods:{
+    async init(){
+     for (let index = 0; index < this.tables.length; index++) {
+      const table = this.tables[index];
+      await this.getData(table);
+    }
+    },
     getRowId(item) {
       if (this.selectedTable === "categories") return item.CategoriesID;
       if (this.selectedTable === "products") return item.ProductID;
@@ -106,44 +107,46 @@ export default {
       if (this.selectedTable === "warehouses") return item.WarehouseID;
       if (this.selectedTable === "transactions") return item.TransactionsID;
     },
-    async getData(){
-      await axios.get(`http://127.0.0.1:8000/tables/get/${this.selectedTable}`)
+    async getData(selectedTable){
+      await axios.get(`http://127.0.0.1:8000/tables/get/${selectedTable}`)
       .then((response) => {
         // Handle the response data
-        this.data = response.data;
-        if (this.selectedTable !== 'inventory') {
+        if (this.selectedTable === selectedTable) {
+          this.data = response.data;
+        }
+        if (selectedTable !== 'inventory') {
           const idName = this.data.headers[0];
-          if (this.selectedTable === "categories") {
+          if (selectedTable === "categories") {
             this.idList.categoriesIdList = [];
             this.data.contents.forEach(content => {
               this.idList.categoriesIdList.push(content[idName]);
             });
-          } else if (this.selectedTable === "products") {
+          } else if (selectedTable === "products") {
             this.idList.productsIdList = [];
             this.data.contents.forEach(content => {
               this.idList.productsIdList.push(content[idName]);
             });
-          } else if (this.selectedTable === "suppliers") {
+          } else if (selectedTable === "suppliers") {
             this.idList.suppliersIdList = [];
             this.data.contents.forEach(content => {
               this.idList.suppliersIdList.push(content[idName]);
             });
-          } else if (this.selectedTable === "manufacturers") {
+          } else if (selectedTable === "manufacturers") {
             this.idList.manufacturersIdList = [];
             this.data.contents.forEach(content => {
               this.idList.manufacturersIdList.push(content[idName]);
             });
-          } else if (this.selectedTable === "buyers") {
+          } else if (selectedTable === "buyers") {
             this.idList.buyersIdList = [];
             this.data.contents.forEach(content => {
               this.idList.buyersIdList.push(content[idName]);
             });
-          } else if (this.selectedTable === "warehouses") {
+          } else if (selectedTable === "warehouses") {
             this.idList.warehousesIdList = [];
             this.data.contents.forEach(content => {
               this.idList.warehousesIdList.push(content[idName]);
             });
-          } else if (this.selectedTable === "transactions") {
+          } else if (selectedTable === "transactions") {
             this.idList.transactionsIdList = [];
             this.data.contents.forEach(content => {
               this.idList.transactionsIdList.push(content[idName]);
@@ -229,7 +232,7 @@ export default {
       }
       if (this.editorOn == false) {
         console.log("end and save"); 
-        this.getData();
+        this.getData(this.selectedTable);
       }
     },
   },
