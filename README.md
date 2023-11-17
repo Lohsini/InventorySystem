@@ -2,6 +2,13 @@
 
 Welcome to our Inventory Database System! This system provides a user-friendly interface for querying and managing our inventory database. The system is divided into two main parts: Basic and Advanced. Additionally, at the end of this document, we will provide step-by-step instructions for building the entire project.
 
+## Advanced SQL Query Video Demonstration
+### Part 1: 
+https://www.loom.com/share/662f86de5b7246b08d9ebcceb6a1d100
+* 1:41 The explanation of the avg subtotals for each 3 transaction here has a mistake. This column means each row add three row of subtotals then divide by 3. It is a OLAP query.
+
+### Part 2:
+https://www.loom.com/share/e552931b38d64fa883cbb03ed913bdfb
 
 ## Basic Section
 ### Overview
