@@ -5,22 +5,21 @@
         <div class="choose-area">
           <div class="table_radio" v-for="(item,index) in sections" :key="index">
             <input v-model="selectedSections" type="radio" name="sections" :value="item" :id="item+index" class="d-none">
-            <label :for="item+index" :class="{ 'selected-label': selectedSections === item }">{{item}}</label>
+            <label class="sections-label" :for="item+index" :class="{ 'selected-label': selectedSections === item }">{{item}}</label>
+            <div class="subTable-area" v-if="selectedSections === item">
+              <div v-for="(table,index) in subTables" :key="index">
+                <input v-model="subSelection" type="radio" name="subTables" :value="table" :id="table+index" class="d-none">
+                <label :for="table+index" class="subTable-label" :class="{ 'subselected-label': subSelection === table }">{{table}}</label>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="result">
         <h1>
-          <span v-if="selectedSections">{{capitalizeFirstLetter(selectedSections)}}</span>
+          <span v-if="subSelection">{{capitalizeFirstLetter(subSelection)}}</span>
         </h1>
-
-        <div>
-          <div v-for="(item,index) in subTables" :key="index">
-            <input v-model="subSelection" type="radio" name="subTables" :value="item" :id="item+index" >
-            <label :for="item+index">{{item}}</label>
-          </div>
-        </div>
 
         <div class="container">
           <Table 
@@ -85,8 +84,8 @@ export default {
     fetchTable(){
       if (this.selectedSections === "Quantity Sold") {
         this.subTables = [
-          "Group By Products",
-          "Group By Categories"
+          "Quantity By Products",
+          "Quantity By Categories"
         ];
       } else if (this.selectedSections === "Ranking") {
         this.subTables = [
@@ -105,7 +104,7 @@ export default {
           "Cumulative Revenue Group By Date",
           "Average Subtotal Group By Date", 
           "Profits For Each Month",
-          "StateRevenue",
+          "State Revenue",
           "Total Revenue",
           "Search Profits by Category"
         ];
@@ -125,9 +124,9 @@ export default {
     },
     fetchData() {
       if (this.selectedSections === "Quantity Sold") {
-        if (this.subSelection === "Group By Products") {
+        if (this.subSelection === "Quantity By Products") {
           this.getSalesQuantityProducts();
-        } else if (this.subSelection === "Group By Categories"){
+        } else if (this.subSelection === "Quantity By Categories"){
           this.getSalesQuantityCategories();
         }
       } else if(this.selectedSections === "Stock"){
@@ -467,16 +466,16 @@ h1{
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  width: 200px;
+  width: 230px;
   margin-top: 20px;
 }
 .choose-area .table_radio{
   text-align: left;
 }
-.choose-area .table_radio label{
+.choose-area .table_radio .sections-label{
   padding: 20px;
   height: 50px;
-  width: 200px;
+  width: 230px;
 }
 .choose-area .table_radio label:hover{
   cursor: pointer;
@@ -484,5 +483,24 @@ h1{
 .selected-label{
   background-color: burlywood;
   font-weight: 900;
+}
+.subTable-area{
+  visibility: 0;
+  transition: all 0.8s;
+}
+.choose-area .table_radio .subTable-area .subTable-label{
+  background-color: antiquewhite;
+  border-top: 1px dotted #aaa;
+  padding: 10px;
+  padding-left: 25px;
+  height: 100%;
+  width: 100%;
+  color: #aaa;
+}
+.choose-area .table_radio .subTable-area .subTable-label:hover{
+  color: #2c3e50;
+}
+.choose-area .table_radio .subTable-area .subselected-label{
+  color: #2c3e50;
 }
 </style>

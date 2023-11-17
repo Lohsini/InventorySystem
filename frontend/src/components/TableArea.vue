@@ -19,8 +19,7 @@
           </button>
         </div>
         <h1>
-          <span v-if="selectedTable">{{capitalizeFirstLetter(selectedTable)}} </span>
-          Table
+          <span v-if="selectedTable">{{capitalizeFirstLetter(selectedTable)}} </span>Table
         </h1>
         
         <div class="container">
@@ -273,6 +272,7 @@ h3{
 }
 h1{
   margin: 0;
+  font-size: 2rem;
 }
 .txt{
   display: flex;
