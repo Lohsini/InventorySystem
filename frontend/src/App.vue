@@ -4,35 +4,35 @@
 
     <div class="choose-area">
       <div class="mode_radio">
-        <input v-model="mode" type="radio" name="mode" value="basic" id="basic" class="d-none">
-        <label :class="{'selectedTable': mode === 'basic'}" for="basic">basic</label>
-        <input v-model="mode" type="radio" name="mode" value="advanced" id="advanced" class="d-none">
-        <label :class="{'selectedTable': mode === 'advanced'}" for="advanced">advanced</label>
+        <input v-model="mode" type="radio" name="mode" value="Basic" id="Basic" class="d-none">
+        <label :class="{'selectedTable': mode === 'Basic'}" for="Basic">Basic</label>
+        <input v-model="mode" type="radio" name="mode" value="Advanced" id="Advanced" class="d-none">
+        <label :class="{'selectedTable': mode === 'Advanced'}" for="Advanced">Advanced</label>
       </div>
     </div>
 
-    <TableArea v-if="mode === 'basic'"/>
-    <AdvancedTableArea v-if="mode === 'advanced'"/>
+    <BasicTableArea v-if="mode === 'Basic'"/>
+    <AdvancedTableArea v-if="mode === 'Advanced'"/>
     
   </div>
 </template>
 
 <script>
 import HelloBanner from './components/HelloBanner.vue'
-import TableArea from './components/TableArea.vue'
+import BasicTableArea from './components/BasicTableArea.vue'
 import AdvancedTableArea from './components/AdvancedTableArea.vue'
 
 export default {
   name: 'App',
   components: {
     HelloBanner,
-    TableArea,
+    BasicTableArea,
     AdvancedTableArea,
   },
   data() {
     return {
-      mode: "basic",
-      modes:["basic", "advanced"]
+      mode: "Basic",
+      modes:["Basic", "Advanced"]
     }
   }
 }

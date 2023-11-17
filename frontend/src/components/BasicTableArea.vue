@@ -12,10 +12,11 @@
 
       <div class="result">
         <div class="container edit-area">
-          <span v-if="editorOn == true"><i class="icon fas fa-pen"></i> Edit Mode</span>
-          <span v-if="editorOn == false"><i class="icon fas fa-eye"></i> Read-only Mode</span>
+          <span class="mode-label" v-if="editorOn == true"><i class="icon fas fa-pen"></i> Edit Mode</span>
+          <span class="mode-label" v-if="editorOn == false"><i class="icon fas fa-eye"></i> Read-only Mode</span>
           <button class="change-btn mx-2 btn btn-primary" @click="turnOnEditor">
-            change
+            <span v-if="editorOn == false">Edit</span>
+            <span v-if="editorOn == true">Done</span>
           </button>
         </div>
         <h1>
@@ -249,14 +250,12 @@ export default {
   margin-right: 10px;
   align-self: center;
 }
-.edit-area span{
+.edit-area .mode-label{
   align-self: center;
-  background-color: rgb(243, 193, 29);
-  width: 200px;
-  border-radius: 30px;
 }
 .change-btn{
   background-color: #2c3e50;
+  width: 80px;
 }
 .btn:hover{
   background-color: #2c3e50ca;

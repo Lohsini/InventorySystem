@@ -48,13 +48,13 @@
               >
               </b-form-datepicker>
             </div>
-            <button class="search-btn mx-2 btn btn-primary" @click="searchDate">search</button>
+            <button class="search-btn mx-2 btn btn-primary" @click="searchDate">Search</button>
           </div>
 
           <div v-if="subSelection === 'Quantity By Products'|| subSelection==='Quantity By Categories'">
             You Can Set NTILE Here:
             <input type="number" min="1" max="9" v-model="NTILENum">
-            <button class="search-btn mx-4 btn btn-primary" @click="searchNTILE">search</button>
+            <button class="search-btn mx-4 btn btn-primary" @click="searchNTILE">Search</button>
           </div>
 
           <div v-if="subSelection === 'Search Profits by Category'">
@@ -67,7 +67,7 @@
               <option selected disabled value="">CategoriesName</option>
               <option v-for="(id, key) in categoriesNameList" :key="key" :value="id">{{id}}</option>
             </select>
-            <button class="search-btn mx-4 btn btn-primary" @click="searchData">search</button>
+            <button class="search-btn mx-4 btn btn-primary" @click="searchData">Search</button>
           </div>
         </div>
 
@@ -618,12 +618,13 @@ h1{
   width: 200px;
 }
 .search-btn{
-  margin-left: 30px;
-  width: 100px;
   align-self: center;
+  width: 100px;
+  margin-left: 30px;
+  background-color: #2c3e50;
 }
-/* .btn:hover{
-  background-color: rgba(243, 193, 29, 0.529);
-  border: rgba(243, 193, 29, 0.529) solid 1px;
-} */
+.btn:hover{
+  background-color: #2c3e50ca;
+  border: #2c3e502b solid 1px;
+}
 </style>
