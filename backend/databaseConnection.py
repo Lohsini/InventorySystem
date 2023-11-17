@@ -1,5 +1,5 @@
 import mysql.connector
-import password
+import password # you can ignore this line, just fill in your password at line 14
 import sqlite3
 from typing import Union
 from classDefine import BuyersRow, CategoriesRow, InventoryRow, ManufacturersRow, ProductsRow, SuppliersRow, TransactionsRow, WarehousesRow
@@ -11,8 +11,8 @@ def connect_database():
     connection = mysql.connector.connect(
       host ="localhost",
       user ="root",
-      password = password.password,
-      database = "TeamProject"
+      password = password.password, # fill your own password
+      database = "TeamProject" # check your database name
     )
     
     return connection
