@@ -276,7 +276,7 @@ h1{
   display: flex;
 }
 .side-nav{
-  flex: 15%;
+  flex: 20%;
   background-color: rgba(252, 167, 21, 0.295);
   min-width: 230px;
   min-height: calc(100vh - 175px);
@@ -285,7 +285,7 @@ h1{
 }
 .result{
   display: flex;
-  flex: 85%;
+  flex: 80%;
   flex-direction: column;
   justify-content: start;
   overflow: auto;

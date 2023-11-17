@@ -9,7 +9,9 @@
             <div class="subTable-area" v-if="selectedSections === item">
               <div v-for="(table,index) in subTables" :key="index">
                 <input v-model="subSelection" type="radio" name="subTables" :value="table" :id="table+index" class="d-none">
-                <label :for="table+index" class="subTable-label" :class="{ 'subselected-label': subSelection === table }">{{table}}</label>
+                <label :for="table+index" class="subTable-label" :class="{ 'subselected-label': subSelection === table }">
+                  - {{table}}
+                </label>
               </div>
             </div>
           </div>
@@ -546,7 +548,7 @@ h1{
   display: flex;
 }
 .side-nav{
-  flex: 15%;
+  flex: 20%;
   background-color: rgba(252, 167, 21, 0.295);
   min-width: 230px;
   min-height: calc(100vh - 175px);
@@ -555,7 +557,7 @@ h1{
 }
 .result{
   display: flex;
-  flex: 85%;
+  flex: 80%;
   flex-direction: column;
   justify-content: start;
   overflow: auto;
@@ -565,7 +567,7 @@ h1{
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  width: 230px;
+  width: 100%;
   margin-top: 20px;
 }
 .choose-area .table_radio{
@@ -574,7 +576,7 @@ h1{
 .choose-area .table_radio .sections-label{
   padding: 20px;
   height: 50px;
-  width: 230px;
+  width: 100%;
 }
 .choose-area .table_radio label:hover{
   cursor: pointer;
