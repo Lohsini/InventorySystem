@@ -92,10 +92,10 @@ export default {
   },
   methods:{
     async init(){
-     for (let index = 0; index < this.tables.length; index++) {
-      const table = this.tables[index];
-      await this.getData(table);
-    }
+      for (let index = 0; index < this.tables.length; index++) {
+        const table = this.tables[index];
+        await this.getData(table);
+      }
     },
     getRowId(item) {
       if (this.selectedTable === "categories") return item.CategoriesID;
@@ -114,41 +114,40 @@ export default {
           this.data = response.data;
         }
         if (selectedTable !== 'inventory') {
-          const idName = this.data.headers[0];
           if (selectedTable === "categories") {
             this.idList.categoriesIdList = [];
-            this.data.contents.forEach(content => {
-              this.idList.categoriesIdList.push(content[idName]);
+            response.data.contents.forEach(content => {
+              this.idList.categoriesIdList.push(content.CategoriesID);
             });
           } else if (selectedTable === "products") {
             this.idList.productsIdList = [];
-            this.data.contents.forEach(content => {
-              this.idList.productsIdList.push(content[idName]);
+            response.data.contents.forEach(content => {
+              this.idList.productsIdList.push(content.ProductID);
             });
           } else if (selectedTable === "suppliers") {
             this.idList.suppliersIdList = [];
-            this.data.contents.forEach(content => {
-              this.idList.suppliersIdList.push(content[idName]);
+            response.data.contents.forEach(content => {
+              this.idList.suppliersIdList.push(content.SupplierID);
             });
           } else if (selectedTable === "manufacturers") {
             this.idList.manufacturersIdList = [];
-            this.data.contents.forEach(content => {
-              this.idList.manufacturersIdList.push(content[idName]);
+            response.data.contents.forEach(content => {
+              this.idList.manufacturersIdList.push(content.ManufacturerID);
             });
           } else if (selectedTable === "buyers") {
             this.idList.buyersIdList = [];
-            this.data.contents.forEach(content => {
-              this.idList.buyersIdList.push(content[idName]);
+            response.data.contents.forEach(content => {
+              this.idList.buyersIdList.push(content.BuyerID);
             });
           } else if (selectedTable === "warehouses") {
             this.idList.warehousesIdList = [];
-            this.data.contents.forEach(content => {
-              this.idList.warehousesIdList.push(content[idName]);
+            response.data.contents.forEach(content => {
+              this.idList.warehousesIdList.push(content.WarehouseID);
             });
           } else if (selectedTable === "transactions") {
             this.idList.transactionsIdList = [];
-            this.data.contents.forEach(content => {
-              this.idList.transactionsIdList.push(content[idName]);
+            response.data.contents.forEach(content => {
+              this.idList.transactionsIdList.push(content.TransactionsID);
             });
           }
         }
