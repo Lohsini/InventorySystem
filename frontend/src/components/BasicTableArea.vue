@@ -172,7 +172,7 @@ export default {
       .catch((error) => {
         // Handle any errors
         console.error("Error: Fail", error);
-        window.alert("Error: Fail");
+        window.alert("Error: Invalid input. Please check each of your inputs.");
       });
     },
     deleteData(item, index){
@@ -218,7 +218,7 @@ export default {
       .catch((error) => {
         // Handle any errors
         console.error("Error: Fail", error);
-        window.alert("Error: Fail");
+        window.alert("Error: Invalid input. Please check each of your inputs.");
       });
     },
     capitalizeFirstLetter(string) {

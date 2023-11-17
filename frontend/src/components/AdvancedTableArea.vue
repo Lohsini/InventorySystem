@@ -280,42 +280,68 @@ export default {
         start_date: this.startDate,
         end_date: this.endDate,
       }
-      axios.post("http://127.0.0.1:8000/advanced/quantity_sold", body)
-      .then((response) => {
-        // Handle the response data
-        this.data = response.data;
-      })
-      .catch((error) => {
-        // Handle any errors
-        console.error('Error:', error);
-        window.alert("Error: Fail");
-      });
+      if (new Date(body.end_date) >= new Date(body.start_date)) {
+        axios.post("http://127.0.0.1:8000/advanced/quantity_sold", body)
+        .then((response) => {
+          // Handle the response data
+          this.data = response.data;
+        })
+        .catch((error) => {
+          // Handle any errors
+          console.error('Error:', error);
+          window.alert("Error: Fail");
+        });
+      } else {
+        window.alert("Error: End date cannot be less than start date");
+      }
     },
     getSalesQuantityCategories(){
-      const NTILENum = this.NTILENum;
-      axios.get(`http://127.0.0.1:8000/advanced/quantity_sold/categories/${NTILENum}`)
-      .then((response) => {
-        // Handle the response data
-        this.data = response.data;
-      })
-      .catch((error) => {
-        // Handle any errors
-        console.error('Error:', error);
-        window.alert("Error: Fail");
-      });
+      const NTILENum = parseInt(this.NTILENum);
+      if (!isNaN(NTILENum) && NTILENum !== "") {
+        if (NTILENum <= 0) {
+          console.log(NTILENum);
+          window.alert("Error: Input is not a valid integer");
+          this.NTILENum = 4;
+        } else {
+          axios.get(`http://127.0.0.1:8000/advanced/quantity_sold/categories/${NTILENum}`)
+          .then((response) => {
+            // Handle the response data
+            this.data = response.data;
+          })
+          .catch((error) => {
+            // Handle any errors
+            console.error('Error:', error);
+            window.alert("Error: Fail");
+          });
+        }
+      } else {
+        window.alert("Error: Input is not a valid integer");
+        this.NTILENum = 4;
+      }
     },
     getSalesQuantityProducts(){
-      const NTILENum = this.NTILENum;
-      axios.get(`http://127.0.0.1:8000/advanced/quantity_sold/products/${NTILENum}`)
-      .then((response) => {
-        // Handle the response data
-        this.data = response.data;
-      })
-      .catch((error) => {
-        // Handle any errors
-        console.error('Error:', error);
-        window.alert("Error: Fail");
-      });
+      const NTILENum = parseInt(this.NTILENum);
+      if (!isNaN(NTILENum) && NTILENum !== "") {
+        if (NTILENum <= 0) {
+          console.log(NTILENum);
+          window.alert("Error: Input is not a valid integer");
+          this.NTILENum = 4;
+        } else {
+          axios.get(`http://127.0.0.1:8000/advanced/quantity_sold/products/${NTILENum}`)
+          .then((response) => {
+            // Handle the response data
+            this.data = response.data;
+          })
+          .catch((error) => {
+            // Handle any errors
+            console.error('Error:', error);
+            window.alert("Error: Fail");
+          });
+        }
+      } else {
+        window.alert("Error: Input is not a valid integer");
+        this.NTILENum = 4;
+      }
     },
     getCumulativeRevenueInDate(){
       axios.get("http://127.0.0.1:8000/advanced/cumulative_revenue_in_date/")
