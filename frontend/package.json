@@ -2,10 +2,12 @@
   "name": "425databaseproject",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://lohsini.github.io/InventorySystem",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "axios": "^1.6.0",
@@ -22,6 +24,7 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
+    "gh-pages": "^6.3.0",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {
